@@ -36,12 +36,41 @@ const willIntersectArea = (initialVelocity, area) => {
   return false;
 };
 
+const getMaximum = (initialVelocity, area) => {
+  let position = 0;
+  let velocity = initialVelocity[1];
+  let maximum = position;
+
+  while (position >= area[1][0]) {
+    if (position > maximum) {
+      maximum = position;
+    }
+
+    position += velocity;
+    velocity -= 1;
+  }
+
+  return maximum;
+};
+
 const findTotalVelocities = (area) => {
+  const minimumX = Math.min(
+    ...[-(1 / 2) + Math.sqrt(1 / 4 + 2 * area[0][0]), -(1 / 2) - Math.sqrt(1 / 4 + 2 * area[0][0])]
+      .filter((minimum) => minimum > 0)
+      .map((minimum) => Math.floor(minimum)),
+  );
+  let maximum = 2;
   let total = 0;
-  for (let i = 0; i <= area[0][1]; i += 1) {
-    for (let j = area[1][0]; j < 1000; j += 1) {
+
+  for (let i = minimumX; i <= area[0][1]; i += 1) {
+    for (let j = area[1][0]; j <= maximum; j += 1) {
       if (willIntersectArea([i, j], area)) {
         total += 1;
+
+        const currentMaximum = getMaximum([i, j], area);
+        if (currentMaximum > maximum) {
+          maximum = currentMaximum;
+        }
       }
     }
   }

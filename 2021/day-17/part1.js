@@ -54,10 +54,15 @@ const getMaximum = (initialVelocity, area) => {
 };
 
 const findTallestVelocity = (area) => {
-  let maximum = -Infinity;
+  let maximum = 2;
   let velocity = [0, area[1][0]];
-  for (let i = 0; i <= area[0][1]; i += 1) {
-    for (let j = area[1][0]; j < 1000; j += 1) {
+  const minimumX = Math.min(
+    ...[-(1 / 2) + Math.sqrt(1 / 4 + 2 * area[0][0]), -(1 / 2) - Math.sqrt(1 / 4 + 2 * area[0][0])]
+      .filter((minimum) => minimum > 0)
+      .map((minimum) => Math.floor(minimum)),
+  );
+  for (let i = minimumX; i <= area[0][1]; i += 1) {
+    for (let j = area[1][0]; j <= maximum; j += 1) {
       const currentMaximum = getMaximum([i, j], area);
       if (willIntersectArea([i, j], area) && currentMaximum > maximum) {
         maximum = currentMaximum;
