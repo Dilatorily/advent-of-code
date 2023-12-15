@@ -40,10 +40,10 @@ if (!['1', '2'].includes(values.part)) {
 describe('${year}-12-${day} part 1', () => {
   it("returns the example's solution", () => {
     const input = \`\`;
+    const output = 0;
 
     const results = part1(input);
-
-    expect(results).toBe(0);
+    expect(results).toBe(output);
   });
 });
 `,
@@ -55,10 +55,10 @@ describe('${year}-12-${day} part 1', () => {
 describe('${year}-12-${day} part 2', () => {
   it("returns the example's solution", () => {
     const input = \`\`;
+    const output = 0;
 
     const results = part2(input);
-
-    expect(results).toBe(0);
+    expect(results).toBe(output);
   });
 });
 `,
