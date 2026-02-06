@@ -1,5 +1,5 @@
 .*
 !.eslintrc.cjs
 !.gitignore
+!.nvmrc
 node_modules
-session.txt

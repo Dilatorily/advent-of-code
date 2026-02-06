@@ -68,7 +68,7 @@ describe('${year}-12-${day} part 2', () => {
     createFile(join(dirname, `${year}`, `day-${day}`, name), content);
   });
 } else {
-  const session = readFileSync(join(dirname, '..', 'session.txt'), { encoding: 'utf-8' });
+  const session = readFileSync(join(dirname, '..', '.session'), { encoding: 'utf-8' });
   const response = await fetch(`https://adventofcode.com/${year}/day/${day}/input`, {
     headers: { Cookie: `session=${session}` },
   });
