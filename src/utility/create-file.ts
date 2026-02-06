@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 
-export default (path, content) => {
+export default function createFile(path: string, content: string): void {
   mkdirSync(dirname(path), { recursive: true });
 
   try {
@@ -9,4 +9,4 @@ export default (path, content) => {
   } catch {
     writeFileSync(path, content);
   }
-};
+}

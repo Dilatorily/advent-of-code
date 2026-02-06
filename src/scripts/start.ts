@@ -3,7 +3,12 @@ import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import clipboardy from 'clipboardy';
-import createFile from './utility/create-file.js';
+import createFile from '../utility/create-file.ts';
+
+interface CliArgs {
+  date?: string;
+  part?: string;
+}
 
 const dirname = fileURLToPath(new URL('.', import.meta.url));
 const { values } = parseArgs({
@@ -11,15 +16,17 @@ const { values } = parseArgs({
     date: { short: 'd', type: 'string' },
     part: { short: 'p', type: 'string' },
   },
-});
-const date = new Date(values.date);
+}) as { values: CliArgs };
+const date = new Date(values.date || Date.now());
 const year = date.getUTCFullYear();
 const day = date.getUTCDate();
 
-if (!['1', '2'].includes(values.part)) {
+type Solution = (input: string) => number | string;
+
+if (!values.part || !['1', '2'].includes(values.part)) {
   [
     {
-      content: `export default (input) => {
+      content: `export default (input: string): number | string => {
   const lines = input.split('\\n');
   return lines.length;
 };
@@ -27,7 +34,7 @@ if (!['1', '2'].includes(values.part)) {
       name: 'part-1.js',
     },
     {
-      content: `export default (input) => {
+      content: `export default (input: string): number | string => {
   const lines = input.split('\\n');
   return lines.length;
 };
@@ -38,7 +45,7 @@ if (!['1', '2'].includes(values.part)) {
       content: `import part1 from './part-1.js';
 
 describe('${year}-12-${day} part 1', () => {
-  it("returns the example's solution", () => {
+  it("returns example's solution", () => {
     const input = \`\`;
     const output = 0;
 
@@ -53,7 +60,7 @@ describe('${year}-12-${day} part 1', () => {
       content: `import part2 from './part-2.js';
 
 describe('${year}-12-${day} part 2', () => {
-  it("returns the example's solution", () => {
+  it("returns example's solution", () => {
     const input = \`\`;
     const output = 0;
 
@@ -64,7 +71,7 @@ describe('${year}-12-${day} part 2', () => {
 `,
       name: 'part-2.test.js',
     },
-  ].forEach(({ content = '', name }) => {
+  ].forEach(({ content = '', name }: { content: string; name: string }) => {
     createFile(join(dirname, `${year}`, `day-${day}`, name), content);
   });
 } else {
@@ -74,7 +81,9 @@ describe('${year}-12-${day} part 2', () => {
   });
   const input = (await response.text()).slice(0, -1);
 
-  const { default: solution } = await import(`./${year}/day-${day}/part-${values.part}.js`);
+  const { default: solution } = (await import(`./${year}/day-${day}/part-${values.part}.js`)) as {
+    default: Solution;
+  };
   const output = solution(input);
   clipboardy.writeSync(`${output}`);
   console.log(output);
