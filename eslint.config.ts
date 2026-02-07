@@ -1,8 +1,11 @@
+import path from 'node:path';
+
 import js from '@eslint/js';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import prettierConfig from 'eslint-config-prettier';
 import jestPlugin from 'eslint-plugin-jest';
+import pathAliasPlugin from 'eslint-plugin-path-alias';
 import prettierPlugin from 'eslint-plugin-prettier';
 import unusedImports from 'eslint-plugin-unused-imports';
 import globals from 'globals';
@@ -13,9 +16,7 @@ export default [
     files: ['*.config.ts', 'src/**/*.{ts,tsx,js,jsx}'],
     languageOptions: {
       parser: tsparser,
-      parserOptions: {
-        project: './tsconfig.json',
-      },
+      parserOptions: { project: './tsconfig.json' },
       globals: {
         ...globals.browser,
         ...globals.es2024,
@@ -25,6 +26,7 @@ export default [
     },
     plugins: {
       '@typescript-eslint': tseslint,
+      'path-alias': pathAliasPlugin,
       prettier: prettierPlugin,
       'unused-imports': unusedImports,
     },
@@ -32,6 +34,10 @@ export default [
       ...tseslint.configs.recommended.rules,
       ...prettierConfig.rules,
       '@typescript-eslint/no-unused-vars': 'off',
+      'path-alias/no-relative': [
+        'error',
+        { paths: { '@dilatorily/advent-of-code': path.resolve(import.meta.dirname, './src') } },
+      ],
       'prettier/prettier': 'error',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
@@ -45,7 +51,6 @@ export default [
       ],
     },
   },
-
   {
     files: ['src/**/*.test.{ts,tsx,js,jsx}'],
     plugins: {
