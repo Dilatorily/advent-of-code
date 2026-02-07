@@ -1,6 +1,6 @@
-import fillArray from '@dilatorily/advent-of-code/utility/fill-array';
-import reduceSum from '@dilatorily/advent-of-code/utility/reduce-sum';
-import toNumber from '@dilatorily/advent-of-code/utility/to-number';
+import fillArray from '#dilatorily/advent-of-code/utility/fill-array';
+import reduceSum from '#dilatorily/advent-of-code/utility/reduce-sum';
+import toNumber from '#dilatorily/advent-of-code/utility/to-number';
 
 const boxes = fillArray(256, []);
 

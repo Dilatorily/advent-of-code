@@ -36,7 +36,7 @@ export default [
       '@typescript-eslint/no-unused-vars': 'off',
       'path-alias/no-relative': [
         'error',
-        { paths: { '@dilatorily/advent-of-code': path.resolve(import.meta.dirname, './src') } },
+        { paths: { '#dilatorily/advent-of-code': path.resolve(import.meta.dirname, './src') } },
       ],
       'prettier/prettier': 'error',
       'unused-imports/no-unused-imports': 'error',

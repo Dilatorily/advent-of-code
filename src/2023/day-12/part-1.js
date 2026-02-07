@@ -1,6 +1,6 @@
-import memoize from '@dilatorily/advent-of-code/utility/memoize';
-import reduceSum from '@dilatorily/advent-of-code/utility/reduce-sum';
-import toNumber from '@dilatorily/advent-of-code/utility/to-number';
+import memoize from '#dilatorily/advent-of-code/utility/memoize';
+import reduceSum from '#dilatorily/advent-of-code/utility/reduce-sum';
+import toNumber from '#dilatorily/advent-of-code/utility/to-number';
 
 const calculateArrangements = memoize((row, groups) => {
   // Has a possible arrangement if the row and the groups are both empty

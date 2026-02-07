@@ -5,7 +5,7 @@
     "moduleResolution": "nodenext",
     "noEmit": true,
     "paths": {
-      "@dilatorily/advent-of-code/*": ["./src/*.ts"]
+      "#dilatorily/advent-of-code/*": ["./src/*.ts"]
     },
     "strict": true,
     "target": "ESNext"

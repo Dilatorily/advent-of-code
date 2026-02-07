@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "imports": {
-    "@dilatorily/advent-of-code/*": "./src/*.ts"
+    "#dilatorily/advent-of-code/*": "./src/*.ts"
   },
   "repository": {
     "type": "git",

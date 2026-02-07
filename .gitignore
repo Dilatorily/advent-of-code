@@ -1,7 +1,5 @@
 .*
-!.eslintrc.cjs
 !.gitignore
 !.husky
-!.lintstagedrc.ts
 !.nvmrc
 node_modules

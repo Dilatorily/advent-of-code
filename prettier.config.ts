@@ -5,7 +5,7 @@ export default {
     '',
     '<THIRD_PARTY_MODULES>',
     '',
-    '^(@dilatorily)(/.*)$',
+    '^(#dilatorily)(/.*)$',
     '^[.]',
     '',
     '<TYPES>',
