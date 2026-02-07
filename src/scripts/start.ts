@@ -1,8 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
+import { parseArgs } from 'node:util';
+
 import clipboardy from 'clipboardy';
+
 import createFile from '../utility/create-file.ts';
 
 interface CliArgs {

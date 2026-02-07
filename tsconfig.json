@@ -8,5 +8,5 @@
     "target": "ESNext"
   },
   "exclude": ["node_modules", "src/2015", "src/2021", "src/2022", "src/2023"],
-  "include": ["src"]
+  "include": ["eslint.config.ts", "jest.config.ts", "prettier.config.ts", "src"]
 }

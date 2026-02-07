@@ -1,4 +1,4 @@
-import reduceSum from './reduce-sum.js';
+import reduceSum from './reduce-sum.ts';
 
 export default function findStringsDistance(a: string, b: string): number {
   return a

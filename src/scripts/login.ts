@@ -1,17 +1,23 @@
-import { spawnSync, type SpawnSyncReturns } from 'node:child_process';
+import { execSync, spawnSync } from 'node:child_process';
 import { existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import puppeteer, { type Browser, type Page, type Cookie } from 'puppeteer';
-import prompts from 'prompts';
-import { config } from 'dotenv';
+
 import chalk from 'chalk';
-import ora, { type Ora } from 'ora';
+import { config } from 'dotenv';
+import ora from 'ora';
+import prompts from 'prompts';
+import { launch } from 'puppeteer';
+
+import type { SpawnSyncReturns } from 'node:child_process';
+import type { Ora } from 'ora';
+import type { Browser, Cookie, Page } from 'puppeteer';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const rootDir = join(__dirname, '..', '..');
 
 const localBwPath = join(rootDir, 'node_modules', '@bitwarden', 'cli', 'build', 'bw.js');
+const defaultServerUrl = 'https://vault.bitwarden.com';
 
 config({ path: join(rootDir, '.env'), quiet: true });
 
@@ -32,19 +38,7 @@ interface BwCommandOptions {
   env?: Record<string, string | undefined>;
 }
 
-async function ensureBitwardenCLI(): Promise<string> {
-  const spinner = ora('Checking for Bitwarden CLI...').start();
-
-  if (existsSync(localBwPath)) {
-    spinner.succeed(chalk.green('Bitwarden CLI found'));
-    return localBwPath;
-  }
-
-  spinner.fail(chalk.red('Bitwarden CLI not found'));
-  throw new Error('Bitwarden CLI not found. Run: npm install @bitwarden/cli');
-}
-
-function bwCommand(args: string[], options: BwCommandOptions = {}): SpawnSyncReturns<string> {
+const bwCommand = (args: string[], options: BwCommandOptions = {}): SpawnSyncReturns<string> => {
   const env = {
     ...process.env,
     BITWARDENCLI_APPDATA_DIR: join(rootDir, '.bitwarden-cli'),
@@ -59,13 +53,13 @@ function bwCommand(args: string[], options: BwCommandOptions = {}): SpawnSyncRet
   });
 
   return result;
-}
+};
 
-function bwCommandWithRetry(
+const bwCommandWithRetry = (
   args: string[],
   options: BwCommandOptions = {},
   maxRetries = 3,
-): SpawnSyncReturns<string> {
+): SpawnSyncReturns<string> => {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     const result = bwCommand(args, options);
 
@@ -79,7 +73,6 @@ function bwCommandWithRetry(
       if (result.stderr) {
         console.log(chalk.gray(`    stderr: ${result.stderr.trim()}`));
       }
-      const { execSync } = require('node:child_process');
       execSync(`sleep ${delay / 1000}`, { stdio: 'ignore' });
     } else {
       return result;
@@ -87,9 +80,9 @@ function bwCommandWithRetry(
   }
 
   return bwCommand(args, options);
-}
+};
 
-async function firstTimeSetup(): Promise<SetupResponse> {
+const firstTimeSetup = async (): Promise<SetupResponse> => {
   console.log(chalk.cyan.bold('\n🔐 First-time setup\n'));
 
   const response = (await prompts([
@@ -115,7 +108,7 @@ async function firstTimeSetup(): Promise<SetupResponse> {
 
   if (!response.clientId || !response.clientSecret) {
     console.log(chalk.yellow('Setup cancelled'));
-    process.exit(1);
+    process.exitCode = 1;
   }
 
   const envContent = `BITWARDEN_SERVER_URL=${response.serverUrl || 'https://vault.bitwarden.com'}
@@ -127,16 +120,21 @@ BITWARDEN_CLIENT_SECRET=${response.clientSecret}
   console.log(chalk.green('✓ Configuration saved to .env\n'));
 
   return response;
-}
+};
 
-function logout(): void {
+const logout = () => {
+  if (!hasActiveSession()) {
+    return;
+  }
+
+  console.log(chalk.yellow('🚪 Logging out from Bitwarden...'));
   const result = bwCommand(['logout']);
   if (result.status === 0) {
     console.log(chalk.gray('  Logged out'));
   }
-}
+};
 
-function hasActiveSession(): boolean {
+const hasActiveSession = (): boolean => {
   const status = bwCommand(['status']);
   if (status.status !== 0) return false;
 
@@ -146,14 +144,14 @@ function hasActiveSession(): boolean {
   } catch {
     return false;
   }
-}
+};
 
-async function unlockVault(
+const unlockVault = async (
   serverUrl: string,
   clientId: string,
   clientSecret: string,
   spinner: Ora,
-): Promise<string> {
+): Promise<string> => {
   if (hasActiveSession()) {
     spinner.text = 'Cleaning up previous session...';
     logout();
@@ -221,9 +219,9 @@ async function unlockVault(
 
   spinner.text = 'Vault unlocked';
   return sessionKey;
-}
+};
 
-function findGitHubCredentials(sessionKey: string, spinner: Ora): GitHubCredentials {
+const findGitHubCredentials = (sessionKey: string, spinner: Ora): GitHubCredentials => {
   process.env.BW_SESSION = sessionKey;
 
   spinner.text = 'Searching for GitHub credentials...';
@@ -256,21 +254,19 @@ function findGitHubCredentials(sessionKey: string, spinner: Ora): GitHubCredenti
     totp: login.totp,
     itemId: item.id,
   };
-}
+};
 
-async function loginToAoC(
+const loginToAoC = async (
   serverUrl: string,
   clientId: string,
   clientSecret: string,
-): Promise<string> {
+): Promise<string> => {
   const spinner = ora('Authenticating with Advent of Code').start();
 
-  const browser: Browser = await puppeteer.launch({
+  const browser: Browser = await launch({
     headless: 'shell',
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage'],
   });
-
-  let sessionKey: string | null = null;
 
   try {
     const page: Page = await browser.newPage();
@@ -319,7 +315,7 @@ async function loginToAoC(
 
     if (pathname === '/login' || pathname.startsWith('/login?')) {
       spinner.text = 'Unlocking Bitwarden...';
-      sessionKey = await unlockVault(serverUrl, clientId, clientSecret, spinner);
+      const sessionKey = await unlockVault(serverUrl, clientId, clientSecret, spinner);
       const credentials = findGitHubCredentials(sessionKey, spinner);
 
       spinner.text = 'Logging into GitHub...';
@@ -392,7 +388,7 @@ async function loginToAoC(
         spinner.text = 'Waiting for OAuth redirect...';
         try {
           await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 });
-        } catch (e) {
+        } catch {
           spinner.text = 'OAuth may have completed...';
         }
       } catch (e) {
@@ -406,7 +402,7 @@ async function loginToAoC(
       await page.waitForFunction(() => window.location.hostname === 'adventofcode.com', {
         timeout: 60000,
       });
-    } catch (e) {
+    } catch {
       const finalUrl = page.url();
       spinner.fail(chalk.red(`Failed to redirect to AoC`));
       console.log(chalk.gray(`  Current URL: ${finalUrl}`));
@@ -434,21 +430,20 @@ async function loginToAoC(
   } finally {
     await browser.close();
   }
-}
+};
 
-function saveSession(sessionValue: string): void {
+const saveSession = (sessionValue: string): void => {
   const sessionPath = join(rootDir, '.session');
   writeFileSync(sessionPath, sessionValue, { encoding: 'utf-8' });
   console.log(chalk.green(`✓ Session saved to ${chalk.bold('.session')}`));
-}
+};
 
-async function main(): Promise<void> {
-  const cleanup = () => {
-    console.log(chalk.yellow('\n🚪 Logging out from Bitwarden...'));
-    logout();
-    process.exit(1);
-  };
+const cleanup = () => {
+  logout();
+  process.exitCode = 1;
+};
 
+(async () => {
   process.on('SIGINT', cleanup);
   process.on('SIGTERM', cleanup);
 
@@ -460,24 +455,22 @@ async function main(): Promise<void> {
         chalk.bold('npm start') +
         chalk.cyan(' to download inputs and run solutions.\n'),
     );
-    process.exit(0);
+    return;
   }
 
   try {
-    await ensureBitwardenCLI();
-
     const envPath = join(rootDir, '.env');
-    let serverUrl: string, clientId: string, clientSecret: string;
+    const doesEnvExist = existsSync(envPath);
 
-    if (!existsSync(envPath)) {
+    let clientId = process.env.BITWARDEN_CLIENT_ID;
+    let clientSecret = process.env.BITWARDEN_CLIENT_SECRET;
+    let serverUrl = process.env.BITWARDEN_SERVER_URL ?? defaultServerUrl;
+
+    if (!doesEnvExist) {
       const setup = await firstTimeSetup();
-      serverUrl = setup.serverUrl || 'https://vault.bitwarden.com';
+      serverUrl = setup.serverUrl ?? defaultServerUrl;
       clientId = setup.clientId;
       clientSecret = setup.clientSecret;
-    } else {
-      serverUrl = process.env.BITWARDEN_SERVER_URL || 'https://vault.bitwarden.com';
-      clientId = process.env.BITWARDEN_CLIENT_ID!;
-      clientSecret = process.env.BITWARDEN_CLIENT_SECRET!;
     }
 
     if (!clientId || !clientSecret) {
@@ -485,19 +478,13 @@ async function main(): Promise<void> {
     }
 
     const sessionValue = await loginToAoC(serverUrl, clientId, clientSecret);
-
     saveSession(sessionValue);
 
     console.log(chalk.bold.cyan('\n🎉 Success! Ready to download inputs and run solutions.\n'));
   } catch (error) {
     console.error(chalk.red(`\n✖ ${(error as Error).message}\n`));
-    process.exit(1);
+    process.exitCode = 1;
   } finally {
-    if (hasActiveSession()) {
-      console.log(chalk.yellow('🚪 Logging out from Bitwarden...'));
-      logout();
-    }
+    logout();
   }
-}
-
-main();
+})();
