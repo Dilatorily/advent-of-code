@@ -9,7 +9,7 @@ import globals from 'globals';
 export default [
   js.configs.recommended,
   {
-    files: ['eslint.config.ts', 'jest.config.ts', 'prettier.config.ts', 'src/**/*.{ts,tsx,js,jsx}'],
+    files: ['*.config.ts', 'src/**/*.{ts,tsx,js,jsx}'],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
