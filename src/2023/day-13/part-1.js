@@ -1,7 +1,7 @@
-import findStringsDistance from '../../utility/find-strings-distance.js';
-import reduceSum from '../../utility/reduce-sum.js';
-import reverseString from '../../utility/reverse-string.js';
-import transposeMatrix from '../../utility/transpose-matrix.js';
+import findStringsDistance from '@dilatorily/advent-of-code/utility/find-strings-distance';
+import reduceSum from '@dilatorily/advent-of-code/utility/reduce-sum';
+import reverseString from '@dilatorily/advent-of-code/utility/reverse-string';
+import transposeMatrix from '@dilatorily/advent-of-code/utility/transpose-matrix';
 
 const findVerticalReflection = (terrain, smudges = 0) => {
   for (let index = 1; index < terrain[0].length; index += 1) {

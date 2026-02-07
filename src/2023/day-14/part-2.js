@@ -1,5 +1,5 @@
-import reduceSum from '../../utility/reduce-sum.js';
-import transposeMatrix from '../../utility/transpose-matrix.js';
+import reduceSum from '@dilatorily/advent-of-code/utility/reduce-sum';
+import transposeMatrix from '@dilatorily/advent-of-code/utility/transpose-matrix';
 
 const cycles = 1000000000;
 const cache = {};

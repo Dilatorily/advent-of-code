@@ -5,7 +5,7 @@ import { parseArgs } from 'node:util';
 
 import clipboardy from 'clipboardy';
 
-import createFile from '../utility/create-file.ts';
+import createFile from '@dilatorily/advent-of-code/utility/create-file';
 
 interface CliArgs {
   date?: string;

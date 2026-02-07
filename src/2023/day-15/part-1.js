@@ -1,4 +1,4 @@
-import reduceSum from '../../utility/reduce-sum.js';
+import reduceSum from '@dilatorily/advent-of-code/utility/reduce-sum';
 
 const hash = (string) =>
   string.split('').reduce((value, character) => {

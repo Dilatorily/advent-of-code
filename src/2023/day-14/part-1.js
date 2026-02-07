@@ -1,5 +1,5 @@
-import reduceSum from '../../utility/reduce-sum.js';
-import transposeMatrix from '../../utility/transpose-matrix.js';
+import reduceSum from '@dilatorily/advent-of-code/utility/reduce-sum';
+import transposeMatrix from '@dilatorily/advent-of-code/utility/transpose-matrix';
 
 const tiltPlatform = (platform) => {
   const transposedPlatform = transposeMatrix(platform.map((row) => row.split('')));
