@@ -16,7 +16,7 @@
     "lint": "eslint",
     "login": "node src/scripts/login/index.ts",
     "prepare": "husky",
-    "start": "node src/scripts/start.ts",
+    "start": "node src/scripts/start/index.ts",
     "test": "jest",
     "typings": "tsc"
   },
