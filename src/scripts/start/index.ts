@@ -41,6 +41,12 @@ const validateDay = (day: number): void => {
   }
 };
 
+const validatePart = (part: number): void => {
+  if (part !== 1 && part !== 2) {
+    throw new Error(`Invalid part: ${part}. Must be either 1 or 2.`);
+  }
+};
+
 const parseDate = (dateStr?: string): { year: number; day: number } => {
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -100,6 +106,10 @@ const main = async (): Promise<void> => {
   const args = parseCliArgs();
   const { year, day } = parseDate(args.date);
   const part = args.part ? parseInt(args.part, 10) : undefined;
+
+  if (part !== undefined) {
+    validatePart(part);
+  }
 
   const yearLine = `${chalk.yellow('🎁 Year:')} ${chalk.white(year)}`;
   const dayLine = `${chalk.yellow('📅 Day:')} ${chalk.white(day)}`;
