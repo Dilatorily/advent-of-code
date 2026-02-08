@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "noEmit": true,
@@ -8,7 +8,8 @@
       "#dilatorily/advent-of-code/*": ["./src/*.ts"]
     },
     "strict": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "verbatimModuleSyntax": true
   },
   "exclude": ["node_modules", "src/solutions/**/*.js"],
   "include": ["*.config.ts", "src"]
