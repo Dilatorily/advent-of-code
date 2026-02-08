@@ -35,9 +35,16 @@ const parseCliArgs = (): CliArgs => {
   return values as CliArgs;
 };
 
-const validateDay = (day: number): void => {
-  if (Number.isNaN(day) || day < 1 || day > 25) {
-    throw new Error(`Invalid day: ${day}. Must be between 1 and 25.`);
+const validateYear = (year: number): void => {
+  if (Number.isNaN(year) || year < 2015) {
+    throw new Error(`Invalid year: ${year}. Must be 2015 or later.`);
+  }
+};
+
+const validateDay = (day: number, year: number): void => {
+  const maxDay = year >= 2025 ? 12 : 25;
+  if (Number.isNaN(day) || day < 1 || day > maxDay) {
+    throw new Error(`Invalid day: ${day}. Must be between 1 and ${maxDay}.`);
   }
 };
 
@@ -47,42 +54,41 @@ const validatePart = (part: number): void => {
   }
 };
 
-const parseDate = (dateStr?: string): { year: number; day: number } => {
+const validateDateNotInFuture = (year: number, month: number, day: number): void => {
   const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentDay = now.getDate();
+  const inputDate = new Date(year, month - 1, day); // month is 0-indexed in JS Date
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+  if (inputDate > today) {
+    throw new Error(
+      `Cannot use future date: ${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}. Advent of Code puzzles unlock daily at midnight EST.`,
+    );
+  }
+};
+
+const parseDate = (dateStr?: string): { year: number; day: number } => {
   if (!dateStr) {
-    validateDay(currentDay);
-    return { year: currentYear, day: currentDay };
+    throw new Error('Date is required. Please use --date YYYY-MM-DD format.');
   }
 
-  // Parse "YYYY-MM-DD" or "MM-DD" or "DD"
+  // Only accept "YYYY-MM-DD" format
   const parts = dateStr.split('-').map(Number);
 
-  if (parts.length === 3) {
-    // YYYY-MM-DD format - validate month is December
-    const [, month, day] = parts;
-    if (month !== 12) {
-      throw new Error(`Invalid month: ${month}. Advent of Code is in December.`);
-    }
-    validateDay(day);
-    return { year: parts[0], day };
-  } else if (parts.length === 2) {
-    // MM-DD format - validate month is December
-    const [month, day] = parts;
-    if (month !== 12) {
-      throw new Error(`Invalid month: ${month}. Advent of Code is in December.`);
-    }
-    validateDay(day);
-    return { year: currentYear, day };
-  } else if (parts.length === 1) {
-    const day = parts[0];
-    validateDay(day);
-    return { year: currentYear, day };
+  if (parts.length !== 3) {
+    throw new Error(`Invalid date format: ${dateStr}. Expected YYYY-MM-DD format.`);
   }
 
-  throw new Error(`Invalid date format: ${dateStr}`);
+  const [year, month, day] = parts;
+
+  validateYear(year);
+
+  if (month !== 12) {
+    throw new Error(`Invalid month: ${month}. Advent of Code is in December.`);
+  }
+
+  validateDateNotInFuture(year, month, day);
+  validateDay(day, year);
+  return { year, day };
 };
 
 const printFestiveHeader = (): void => {
@@ -141,8 +147,8 @@ const main = async (): Promise<void> => {
     process.exit(1);
   }
 
-  // Run solutions only if --part flag is specified or if no --date flag was used
-  const shouldRunSolutions = args.part !== undefined || args.date === undefined;
+  // Run solutions only if --part flag is specified
+  const shouldRunSolutions = args.part !== undefined;
 
   if (shouldRunSolutions) {
     if (part === 1 || part === undefined) {
