@@ -61,5 +61,5 @@ export default [
       ...jestPlugin.configs.style.rules,
     },
   },
-  { ignores: ['node_modules', '2015', '2021', '2022', '2023', 'src/2023'] },
+  { ignores: ['node_modules', 'src/solutions/**/*.js'] },
 ];

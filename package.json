@@ -14,7 +14,7 @@
   "scripts": {
     "commit": "lint-staged",
     "lint": "eslint",
-    "login": "node src/scripts/login.ts",
+    "login": "node src/scripts/login/index.ts",
     "prepare": "husky",
     "start": "node src/scripts/start.ts",
     "test": "jest",
