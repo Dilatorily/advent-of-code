@@ -6,7 +6,10 @@ export default {
   },
   preset: 'ts-jest/presets/default-esm',
   transform: {
-    '^.+\\.(ts|tsx|js|jsx)$': ['ts-jest', { tsconfig: { allowJs: true }, useESM: true }],
+    '^.+\\.(ts|tsx|js|jsx)$': [
+      'ts-jest',
+      { tsconfig: { allowJs: true, verbatimModuleSyntax: false }, useESM: true },
+    ],
   },
   transformIgnorePatterns: ['node_modules/(?!(.*))'],
 };
