@@ -38,3 +38,15 @@ Repository for my solutions for [Advent of Code](https://adventofcode.com).
 
 1. Execute `npm start -- --date=yyyy-mm-dd` to create the scaffold for the specified date
 2. Execute `npm start -- --date=yyyy-mm-dd --part [1|2]` to execute the code for the specified date for the specified part
+
+**Options:**
+
+- `--quiet` - Suppress progress output (only shows final answer and errors)
+
+**Examples:**
+
+```bash
+npm start -- --date=2025-12-01 --part 1              # Normal output with progress
+npm start -- --date=2025-12-01 --part 1 --quiet      # Quiet mode (solution output only)
+npm run login -- --quiet                             # Minimal login output
+```

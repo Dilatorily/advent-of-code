@@ -5,6 +5,8 @@ import path from 'node:path';
 import chalk from 'chalk';
 import ora from 'ora';
 
+import { logger } from '#dilatorily/advent-of-code/utility/logger';
+
 const SESSION_FILE = path.join(process.cwd(), '.session');
 
 const readSessionFile = (): string | undefined => {
@@ -15,7 +17,15 @@ const readSessionFile = (): string | undefined => {
   }
 };
 
-export const validateSession = async (): Promise<boolean> => {
+export const deleteSessionFile = () => {
+  try {
+    fs.unlinkSync(SESSION_FILE);
+  } catch {
+    // Silently ignore if file doesn't exist
+  }
+};
+
+export const validateSession = async () => {
   const spinner = ora('🎄 Checking your Advent session...').start();
 
   try {
@@ -29,9 +39,7 @@ export const validateSession = async (): Promise<boolean> => {
 
     // Test session by making a request to AoC
     const response = await fetch('https://adventofcode.com/2015/day/1', {
-      headers: {
-        Cookie: `session=${session}`,
-      },
+      headers: { Cookie: `session=${session}` },
     });
 
     if (!response.ok || response.status === 400) {
@@ -43,17 +51,18 @@ export const validateSession = async (): Promise<boolean> => {
     return true;
   } catch (error) {
     spinner.fail('🔴 Failed to validate session');
-    console.error(chalk.red(error));
+    logger.error(chalk.red(error));
     return false;
   }
 };
 
-export const triggerLogin = (): void => {
-  console.log(chalk.yellow('🎅 Ho ho ho! Your session needs a refresh. Running login...\n'));
+export const triggerLogin = (quiet: boolean) => {
+  logger.log(chalk.yellow('🎅 Ho ho ho! Your session needs a refresh. Running login...\n'));
   try {
-    execSync('npm run login', { stdio: 'inherit' });
+    const quietFlag = quiet ? ' --quiet' : '';
+    execSync(`npm run login${quietFlag}`, { stdio: quiet ? 'pipe' : 'inherit' });
   } catch (error) {
-    console.error(chalk.red('🔴 Login failed:'), error);
+    logger.error(chalk.red('🔴 Login failed:'), error);
     process.exit(1);
   }
 };

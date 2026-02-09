@@ -1,6 +1,6 @@
-import memoize from '#dilatorily/advent-of-code/utility/memoize';
-import reduceSum from '#dilatorily/advent-of-code/utility/reduce-sum';
-import toNumber from '#dilatorily/advent-of-code/utility/to-number';
+import { memoize } from '#dilatorily/advent-of-code/utility/memoize';
+import { sum } from '#dilatorily/advent-of-code/utility/sum';
+import { toNumber } from '#dilatorily/advent-of-code/utility/to-number';
 
 const calculateArrangements = memoize((row, groups) => {
   // Has a possible arrangement if the row and the groups are both empty
@@ -14,7 +14,7 @@ const calculateArrangements = memoize((row, groups) => {
   }
 
   // The row is too short for all of the groups
-  if (row.length < groups.reduce(reduceSum) + (groups.length - 1)) {
+  if (row.length < groups.reduce(sum) + (groups.length - 1)) {
     return 0;
   }
 
@@ -58,7 +58,7 @@ export default (input) => {
       const groups = groupsString.split(',').map(toNumber);
       return calculateArrangements(row, groups);
     })
-    .reduce(reduceSum);
+    .reduce(sum);
 
   return arrangements;
 };

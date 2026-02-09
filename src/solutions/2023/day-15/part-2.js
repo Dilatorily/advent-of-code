@@ -1,6 +1,6 @@
-import fillArray from '#dilatorily/advent-of-code/utility/fill-array';
-import reduceSum from '#dilatorily/advent-of-code/utility/reduce-sum';
-import toNumber from '#dilatorily/advent-of-code/utility/to-number';
+import { fillArray } from '#dilatorily/advent-of-code/utility/fill-array';
+import { sum } from '#dilatorily/advent-of-code/utility/sum';
+import { toNumber } from '#dilatorily/advent-of-code/utility/to-number';
 
 const boxes = fillArray(256, []);
 
@@ -57,10 +57,10 @@ export default (input) => {
       (box, boxIndex) =>
         box
           .map(({ focalLength }, lensIndex) => focalLength * (lensIndex + 1))
-          .reduce(reduceSum, 0) *
+          .reduce(sum, 0) *
         (boxIndex + 1),
     )
-    .reduce(reduceSum);
+    .reduce(sum);
 
   return focusingPower;
 };

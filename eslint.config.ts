@@ -1,65 +1,48 @@
-import path from 'node:path';
-
+import importAliasPlugin from '@dword-design/eslint-plugin-import-alias';
 import js from '@eslint/js';
-import tseslint from '@typescript-eslint/eslint-plugin';
-import tsparser from '@typescript-eslint/parser';
-import prettierConfig from 'eslint-config-prettier';
 import jestPlugin from 'eslint-plugin-jest';
-import pathAliasPlugin from 'eslint-plugin-path-alias';
-import prettierPlugin from 'eslint-plugin-prettier';
-import unusedImports from 'eslint-plugin-unused-imports';
+import prettierPlugin from 'eslint-plugin-prettier/recommended';
+import unusedImportsPlugin from 'eslint-plugin-unused-imports';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
-export default [
+export default defineConfig([
   js.configs.recommended,
+  tseslint.configs.strictTypeChecked,
+  tseslint.configs.stylisticTypeChecked,
+  importAliasPlugin.configs.recommended,
+  jestPlugin.configs['flat/recommended'],
+  jestPlugin.configs['flat/style'],
+  prettierPlugin,
   {
-    files: ['*.config.ts', 'src/**/*.{ts,tsx,js,jsx}'],
+    files: ['*.config.ts', 'src/**/*.ts'],
     languageOptions: {
-      parser: tsparser,
-      parserOptions: { project: './tsconfig.json' },
-      globals: {
-        ...globals.browser,
-        ...globals.es2024,
-        ...globals.node,
-      },
+      globals: globals.node,
+      parserOptions: { projectService: true },
       sourceType: 'module',
     },
-    plugins: {
-      '@typescript-eslint': tseslint,
-      'path-alias': pathAliasPlugin,
-      prettier: prettierPlugin,
-      'unused-imports': unusedImports,
-    },
+    plugins: { 'unused-imports': unusedImportsPlugin },
     rules: {
-      ...tseslint.configs.recommended.rules,
-      ...prettierConfig.rules,
+      '@dword-design/import-alias/prefer-alias': ['error', { aliasForSubpaths: true }],
       '@typescript-eslint/no-unused-vars': 'off',
-      'path-alias/no-relative': [
+      '@typescript-eslint/prefer-nullish-coalescing': [
         'error',
-        { paths: { '#dilatorily/advent-of-code': path.resolve(import.meta.dirname, './src') } },
+        { ignorePrimitives: { string: true } },
       ],
-      'prettier/prettier': 'error',
+      '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
+      'no-console': 'error',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
         'error',
         {
-          vars: 'all',
-          varsIgnorePattern: '^_',
           args: 'after-used',
           argsIgnorePattern: '^_',
+          vars: 'all',
+          varsIgnorePattern: '^_',
         },
       ],
     },
   },
-  {
-    files: ['src/**/*.test.{ts,tsx,js,jsx}'],
-    plugins: {
-      jest: jestPlugin,
-    },
-    rules: {
-      ...jestPlugin.configs.recommended.rules,
-      ...jestPlugin.configs.style.rules,
-    },
-  },
   { ignores: ['node_modules', 'src/solutions/**/*.js'] },
-];
+]);

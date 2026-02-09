@@ -1,7 +1,6 @@
-export default function transposeMatrix<T>(matrix: T[][]): T[][] {
-  return matrix.reduce(
+export const transposeMatrix = <T>(matrix: T[][]): T[][] =>
+  matrix.reduce<T[][]>(
     (transposedMatrix, row) =>
       row.map((_, index) => [...(transposedMatrix[index] ?? []), row[index]]),
-    [] as T[][],
+    [],
   );
-}

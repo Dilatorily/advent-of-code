@@ -1,82 +1,78 @@
-import { getTotpCode } from '#dilatorily/advent-of-code/scripts/login/bitwarden';
+import chalk from 'chalk';
 
-import type { GitHubCredentials } from '#dilatorily/advent-of-code/scripts/login/types';
-import type { Ora } from 'ora';
+import {
+  getCredentials,
+  getTwoFactorCode,
+  logout,
+  unlock,
+} from '#dilatorily/advent-of-code/scripts/login/bitwarden';
+import { spinner } from '#dilatorily/advent-of-code/scripts/login/spinner';
+
+import type { BitwardenConfiguration } from '#dilatorily/advent-of-code/scripts/login/types';
 import type { Page } from 'puppeteer';
 
-export const handleGitHubLogin = async (
-  page: Page,
-  credentials: GitHubCredentials,
-  spinner: Ora,
-): Promise<void> => {
-  spinner.text = 'Logging into GitHub...';
+export const githubLogin = async (page: Page, bitwardenConfiguration: BitwardenConfiguration) => {
+  let currentUrl = new URL(page.url());
 
-  await page.type('#login_field', credentials.username);
-  await page.type('#password', credentials.password);
+  // Verify that we need to login to GitHub
+  if (currentUrl.hostname !== 'github.com') {
+    return;
+  }
 
-  await Promise.all([
-    page.waitForNavigation({ waitUntil: 'domcontentloaded' }).catch(() => {}),
-    page.click('input[name="commit"]'),
-  ]);
+  spinner.text = '🎁 Unlocking Bitwarden vault...';
+  const sessionKey = await unlock(bitwardenConfiguration);
+  const credentials = getCredentials(sessionKey);
 
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  // Handle GitHub login
+  if (currentUrl.pathname === '/login') {
+    spinner.text = '🔑 Logging into GitHub...';
+    await page.type('#login_field', credentials.username);
+    await page.type('#password', credentials.password);
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'networkidle0' }),
+      page.click('input[name="commit"]'),
+    ]);
+  }
 
-  const afterLoginUrl = page.url();
-  if (afterLoginUrl.includes('/two-factor') || afterLoginUrl.includes('/sessions/two-factor')) {
+  // Handle 2FA flow
+  currentUrl = new URL(page.url());
+  if (currentUrl.pathname === '/sessions/two-factor/app') {
     if (!credentials.itemId) {
       spinner.fail('2FA required but no TOTP configured');
       throw new Error('2FA required but no TOTP configured');
     }
 
-    spinner.text = 'Generating 2FA code...';
-    const totpCode = getTotpCode(credentials.itemId);
-    spinner.text = 'Submitting 2FA code...';
+    spinner.text = '🔢 Generating 2FA code...';
+    const totpCode = getTwoFactorCode(credentials.itemId);
 
-    await page.evaluate((code) => {
-      const selectors = [
-        'input[name="app_otp"]',
-        'input[name="otp"]',
-        '#app_totp',
-        '[data-testid="two-factor-code-input"]',
-      ];
-      for (const sel of selectors) {
-        const el = document.querySelector(sel) as HTMLInputElement | null;
-        if (el) {
-          el.value = code;
-          el.dispatchEvent(new Event('input', { bubbles: true }));
-          el.dispatchEvent(new Event('change', { bubbles: true }));
-
-          const btn = document.querySelector('button[type="submit"]') as HTMLButtonElement | null;
-          if (btn) btn.click();
-          return true;
-        }
-      }
-      return false;
-    }, totpCode);
-
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    spinner.text = '📱 Submitting 2FA code...';
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'networkidle0' }),
+      page.type('#app_totp', totpCode),
+    ]);
   }
+
+  logout();
 };
 
-export const handleOAuthAuthorize = async (page: Page, spinner: Ora): Promise<void> => {
-  const afterUrl = page.url();
+export const githubOauth = async (page: Page) => {
+  const currentUrl = new URL(page.url());
 
-  if (afterUrl.includes('/login/oauth/authorize') || afterUrl.includes('/login/oauth')) {
-    spinner.text = 'Authorizing OAuth...';
-    try {
-      await page.waitForSelector('button[type="submit"], input[type="submit"]', {
-        timeout: 10000,
-      });
-      await page.click('button[type="submit"], input[type="submit"]');
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      spinner.text = 'Waiting for OAuth redirect...';
-      try {
-        await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 });
-      } catch {
-        spinner.text = 'OAuth may have completed...';
-      }
-    } catch (e) {
-      spinner.warn(`OAuth note: ${(e as Error).message}`);
-    }
+  // Verify that we need to provide OAuth permissions
+  if (currentUrl.hostname !== 'github.com' || currentUrl.pathname !== '/login/oauth/authorize') {
+    return;
   }
+
+  spinner.text = '🔐 Authorizing OAuth...';
+  const authorizeButton = await page.$('button[type="submit"][value="1"]');
+  if (!authorizeButton) {
+    spinner.fail(chalk.red('Could not find authorize button'));
+    throw new Error('Could not find authorize button');
+  }
+
+  spinner.text = '🎄 Waiting for OAuth redirect...';
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: 'networkidle0' }),
+    authorizeButton.click(),
+  ]);
 };

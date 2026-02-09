@@ -6,84 +6,77 @@ import chalk from 'chalk';
 import { config } from 'dotenv';
 import prompts from 'prompts';
 
-import type { SetupResponse } from '#dilatorily/advent-of-code/scripts/login/types';
+import { logger } from '#dilatorily/advent-of-code/utility/logger';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
-const rootDir = join(__dirname, '..', '..', '..');
-const defaultServerUrl = 'https://vault.bitwarden.com';
+export const rootDir = join(__dirname, '..', '..', '..');
+const DEFAULT_SERVER_URL = 'https://vault.bitwarden.com';
 
 config({ path: join(rootDir, '.env'), quiet: true });
 
-export const getRootDir = (): string => rootDir;
-
-export const getEnvPath = (): string => join(rootDir, '.env');
-
-export const getSessionPath = (): string => join(rootDir, '.session');
-
-export const getBitwardenPath = (): string =>
+export const getEnvPath = () => join(rootDir, '.env');
+export const getSessionPath = () => join(rootDir, '.session');
+export const getBitwardenPath = () =>
   join(rootDir, 'node_modules', '@bitwarden', 'cli', 'build', 'bw.js');
+export const getBitwardenAppDataDir = () => join(rootDir, '.bitwarden-cli');
 
-export const getBitwardenAppDataDir = (): string => join(rootDir, '.bitwarden-cli');
+export const firstTimeSetup = async () => {
+  logger.log(chalk.cyan.bold('\n🎄 First-time Setup 🎄\n'));
+  logger.log(chalk.gray("Let's configure Bitwarden to securely store your credentials.\n"));
 
-export const getDefaultServerUrl = (): string => defaultServerUrl;
-
-export const firstTimeSetup = async (): Promise<SetupResponse> => {
-  console.log(chalk.cyan.bold('\n🔐 First-time setup\n'));
-
-  const response = (await prompts([
+  const response = await prompts([
     {
-      type: 'text',
-      name: 'serverUrl',
+      initial: DEFAULT_SERVER_URL,
       message: 'Bitwarden server URL (leave empty for bitwarden.com):',
-      initial: 'https://vault.bitwarden.com',
-    },
-    {
+      name: 'serverUrl',
       type: 'text',
-      name: 'clientId',
-      message: 'Bitwarden API Client ID:',
-      validate: (value) => value.length > 0 || 'Client ID is required',
     },
     {
-      type: 'password',
-      name: 'clientSecret',
-      message: 'Bitwarden API Client Secret:',
-      validate: (value) => value.length > 0 || 'Client Secret is required',
+      message: 'Bitwarden API Client ID:',
+      name: 'clientId',
+      type: 'text',
+      validate: (value: string) => value.length > 0 || 'Client ID is required',
     },
-  ])) as SetupResponse;
+    {
+      message: 'Bitwarden API Client Secret:',
+      name: 'clientSecret',
+      type: 'password',
+      validate: (value: string) => value.length > 0 || 'Client Secret is required',
+    },
+  ]);
 
-  if (!response.clientId || !response.clientSecret) {
-    console.log(chalk.yellow('Setup cancelled'));
-    process.exitCode = 1;
+  if (
+    !response.clientId ||
+    typeof response.clientId !== 'string' ||
+    !response.clientSecret ||
+    typeof response.clientSecret !== 'string'
+  ) {
+    logger.log(chalk.yellow('Setup cancelled'));
+    process.exit(1);
   }
 
-  const envContent = `BITWARDEN_SERVER_URL=${response.serverUrl || 'https://vault.bitwarden.com'}
+  const envContent = `BITWARDEN_SERVER_URL=${response.serverUrl || DEFAULT_SERVER_URL}
 BITWARDEN_CLIENT_ID=${response.clientId}
 BITWARDEN_CLIENT_SECRET=${response.clientSecret}
 `;
 
-  writeFileSync(join(rootDir, '.env'), envContent);
-  console.log(chalk.green('✓ Configuration saved to .env\n'));
-
-  return response;
-};
-
-export const loadEnvConfig = (): {
-  clientId: string | undefined;
-  clientSecret: string | undefined;
-  serverUrl: string;
-  exists: boolean;
-} => {
-  const envPath = getEnvPath();
-  const doesEnvExist = existsSync(envPath);
-
-  let clientId = process.env.BITWARDEN_CLIENT_ID;
-  let clientSecret = process.env.BITWARDEN_CLIENT_SECRET;
-  let serverUrl = process.env.BITWARDEN_SERVER_URL ?? defaultServerUrl;
+  writeFileSync(getEnvPath(), envContent);
+  logger.log(chalk.green('✅ Configuration saved to .env\n'));
 
   return {
-    clientId,
-    clientSecret,
-    serverUrl,
-    exists: doesEnvExist,
+    clientId: response.clientId,
+    clientSecret: response.clientSecret,
+    serverUrl: typeof response.serverUrl === 'string' ? response.serverUrl : DEFAULT_SERVER_URL,
+  };
+};
+
+export const loadEnvConfig = () => {
+  const envPath = getEnvPath();
+
+  return {
+    clientId: process.env.BITWARDEN_CLIENT_ID,
+    clientSecret: process.env.BITWARDEN_CLIENT_SECRET,
+    exists: existsSync(envPath),
+    serverUrl: process.env.BITWARDEN_SERVER_URL ?? DEFAULT_SERVER_URL,
   };
 };

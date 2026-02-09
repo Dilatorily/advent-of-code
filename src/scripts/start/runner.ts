@@ -5,8 +5,9 @@ import clipboardy from 'clipboardy';
 import ora from 'ora';
 
 import { readInput } from '#dilatorily/advent-of-code/scripts/start/input';
+import { logger } from '#dilatorily/advent-of-code/utility/logger';
 
-import type { SolutionFunction } from '#dilatorily/advent-of-code/scripts/start/types';
+import type { SolutionModule } from '#dilatorily/advent-of-code/scripts/start/types';
 
 export const runSolution = async (
   year: number,
@@ -19,32 +20,31 @@ export const runSolution = async (
   try {
     // Dynamically import the solution
     const solutionPath = pathToFileURL(
-      `${process.cwd()}/src/solutions/${year}/day-${day.toString().padStart(2, '0')}/part-${part}.ts`,
+      `${process.cwd()}/src/solutions/${year}/day-${`${day}`.padStart(2, '0')}/part-${part}.ts`,
     ).toString();
 
-    const module = await import(solutionPath);
-    const solution: SolutionFunction = module.default;
+    const module = (await import(solutionPath)) as SolutionModule;
 
-    if (!solution) {
+    if (!module.solution) {
       spinner.fail(`🔴 No default export found in part-${part}.ts`);
       return;
     }
 
     const lines = readInput(inputFile);
     const startTime = performance.now();
-    const result = solution(lines);
+    const result = module.solution(lines);
     const duration = performance.now() - startTime;
 
     spinner.succeed(chalk.green(`⭐ Part ${part} solved in ${duration.toFixed(2)}ms!`));
 
-    const resultStr = result.toString();
-    console.log(chalk.yellow('\n🎄 Answer:'), chalk.bold(chalk.white(resultStr)));
+    const resultStr = `${result}`;
+    logger.log(chalk.yellow('\n🎄 Answer:'), chalk.bold(chalk.white(resultStr)));
 
     // Copy to clipboard
     await clipboardy.write(resultStr);
-    console.log(chalk.gray('📋 (Copied to clipboard)\n'));
+    logger.log(chalk.gray('📋 (Copied to clipboard)\n'));
   } catch (error) {
     spinner.fail(`🔴 Failed to solve part ${part}`);
-    console.error(chalk.red(error));
+    logger.error(chalk.red(error));
   }
 };

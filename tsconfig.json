@@ -5,12 +5,13 @@
     "moduleResolution": "nodenext",
     "noEmit": true,
     "paths": {
-      "#dilatorily/advent-of-code/*": ["./src/*.ts"]
+      "#dilatorily/advent-of-code/*": ["./src/*"]
     },
+    "skipLibCheck": true,
     "strict": true,
     "target": "ESNext",
     "verbatimModuleSyntax": true
   },
   "exclude": ["node_modules", "src/solutions/**/*.js"],
-  "include": ["*.config.ts", "src"]
+  "include": ["*.config.ts", "src/**/*.ts"]
 }

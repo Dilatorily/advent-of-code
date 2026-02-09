@@ -4,9 +4,11 @@ import path from 'node:path';
 import chalk from 'chalk';
 import ora from 'ora';
 
+import { logger } from '#dilatorily/advent-of-code/utility/logger';
+
 const SESSION_FILE = path.join(process.cwd(), '.session');
 
-const readSessionFile = (): string | undefined => {
+const readSessionFile = () => {
   try {
     return fs.readFileSync(SESSION_FILE, 'utf-8').trim();
   } catch {
@@ -14,18 +16,14 @@ const readSessionFile = (): string | undefined => {
   }
 };
 
-export const downloadInput = async (
-  year: number,
-  day: number,
-  inputFile: string,
-): Promise<boolean> => {
+export const downloadInput = async (year: number, day: number, inputFile: string) => {
   // Check if input already exists
   if (fs.existsSync(inputFile)) {
     return true;
   }
 
   const spinner = ora(
-    `❄️  Fetching puzzle input for ${year}-12-${day.toString().padStart(2, '0')}...`,
+    `❄️  Fetching puzzle input for ${year}-12-${`${day}`.padStart(2, '0')}...`,
   ).start();
 
   try {
@@ -37,9 +35,7 @@ export const downloadInput = async (
     }
 
     const response = await fetch(`https://adventofcode.com/${year}/day/${day}/input`, {
-      headers: {
-        Cookie: `session=${session}`,
-      },
+      headers: { Cookie: `session=${session}` },
     });
 
     if (!response.ok) {
@@ -53,12 +49,12 @@ export const downloadInput = async (
     return true;
   } catch (error) {
     spinner.fail('🔴 Failed to download input');
-    console.error(chalk.red(error));
+    logger.error(chalk.red(error));
     return false;
   }
 };
 
-export const readInput = (inputFile: string): string[] => {
+export const readInput = (inputFile: string) => {
   const content = fs.readFileSync(inputFile, 'utf-8');
   return content.split('\n');
 };

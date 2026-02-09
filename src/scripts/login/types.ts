@@ -1,16 +1,34 @@
-export interface SetupResponse {
-  serverUrl?: string;
+export interface BitwardenConfiguration {
   clientId: string;
   clientSecret: string;
+  serverUrl: string;
 }
 
-export interface GitHubCredentials {
-  username: string;
-  password: string;
-  totp?: string;
-  itemId: string;
+export interface BitwardenUnauthenticatedStatusResponse {
+  lastSync: null;
+  serverUrl: string;
+  status: 'unauthenticated';
+  userEmail: null;
+  userId: null;
 }
 
-export interface BwCommandOptions {
-  env?: Record<string, string | undefined>;
+export interface BitwardenAuthenticatedStatusResponse {
+  lastSync: string;
+  serverUrl: string;
+  status: 'locked' | 'unlocked';
+  userEmail: string;
+  userId: string;
+}
+
+export type BitwardenStatusResponse =
+  | BitwardenUnauthenticatedStatusResponse
+  | BitwardenAuthenticatedStatusResponse;
+
+export interface BitwardenItem {
+  id: string;
+  login: {
+    password: string | null;
+    totp: string | null;
+    username: string | null;
+  };
 }

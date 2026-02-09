@@ -1,5 +1,5 @@
-import reduceSum from '#dilatorily/advent-of-code/utility/reduce-sum';
-import transposeMatrix from '#dilatorily/advent-of-code/utility/transpose-matrix';
+import { sum } from '#dilatorily/advent-of-code/utility/sum';
+import { transposeMatrix } from '#dilatorily/advent-of-code/utility/transpose-matrix';
 
 const tiltPlatform = (platform) => {
   const transposedPlatform = transposeMatrix(platform.map((row) => row.split('')));
@@ -33,7 +33,7 @@ const tiltPlatform = (platform) => {
 const calculateLoad = (platform) =>
   platform
     .map((row, index) => (row.match(/O/g) ?? []).length * (platform.length - index))
-    .reduce(reduceSum);
+    .reduce(sum);
 
 export default (input) => {
   const platform = input.split('\n');

@@ -3,28 +3,27 @@ import path from 'node:path';
 
 import chalk from 'chalk';
 
+import { logger } from '#dilatorily/advent-of-code/utility/logger';
+
 import type { ScaffoldPaths } from '#dilatorily/advent-of-code/scripts/start/types';
 
-const solutionTemplate = `export default (lines: string[]): number | string => {
-  let solution = lines.length;
+const solutionTemplate = `export const solution = (lines: string[]) => {
+  const solution = lines.length;
+
   // Your solution here
+
   return solution;
 };
 `;
 
-const testCasesTemplate = `export interface TestCase {
-  input: string[];
-  part1Output: number | string;
-  part2Output: number | string;
-  description?: string;
-}
+const testCasesTemplate = `import type { TestCase } from '#dilatorily/advent-of-code/scripts/start/types';
 
 export const testCases: TestCase[] = [];
 `;
 
-const getTestTemplate = (year: number, day: number, part: number): string => {
+const getTestTemplate = (year: number, day: number, part: number) => {
   const outputField = part === 1 ? 'part1Output' : 'part2Output';
-  const dayStr = day.toString().padStart(2, '0');
+  const dayStr = `${day}`.padStart(2, '0');
   return `import { describe, expect, it } from '@jest/globals';
 
 import solution from '#dilatorily/advent-of-code/solutions/${year}/day-${dayStr}/part-${part}';
@@ -38,61 +37,61 @@ describe('${year}-12-${dayStr} part ${part}', () => {
 `;
 };
 
-export const createScaffold = (year: number, day: number, paths: ScaffoldPaths): void => {
-  console.log(`${chalk.cyan('🎨 Unwrapping scaffold...')}\n`);
+export const createScaffold = (year: number, day: number, paths: ScaffoldPaths) => {
+  logger.log(`${chalk.cyan('🎨 Unwrapping scaffold...')}\n`);
 
   // Create day directory if it doesn't exist
   if (!fs.existsSync(paths.dayDir)) {
     fs.mkdirSync(paths.dayDir, { recursive: true });
-    console.log(chalk.green('✨ Created directory:'), chalk.white(paths.dayDir));
+    logger.log(chalk.green('✨ Created directory:'), chalk.white(paths.dayDir));
   }
 
   // Create solution files if they don't exist
   if (!fs.existsSync(paths.part1File)) {
     fs.writeFileSync(paths.part1File, solutionTemplate);
-    console.log(chalk.green('🎁 Created:'), chalk.white(paths.part1File));
+    logger.log(chalk.green('🎁 Created:'), chalk.white(paths.part1File));
   } else {
-    console.log(chalk.gray('⏭️  Skipping (exists):'), chalk.white(paths.part1File));
+    logger.log(chalk.gray('⏭️  Skipping (exists):'), chalk.white(paths.part1File));
   }
 
   if (!fs.existsSync(paths.part2File)) {
     fs.writeFileSync(paths.part2File, solutionTemplate);
-    console.log(chalk.green('🎁 Created:'), chalk.white(paths.part2File));
+    logger.log(chalk.green('🎁 Created:'), chalk.white(paths.part2File));
   } else {
-    console.log(chalk.gray('⏭️  Skipping (exists):'), chalk.white(paths.part2File));
+    logger.log(chalk.gray('⏭️  Skipping (exists):'), chalk.white(paths.part2File));
   }
 
   // Create test cases file if it doesn't exist
   if (!fs.existsSync(paths.testCasesFile)) {
     fs.writeFileSync(paths.testCasesFile, testCasesTemplate);
-    console.log(chalk.green('🎁 Created:'), chalk.white(paths.testCasesFile));
+    logger.log(chalk.green('🎁 Created:'), chalk.white(paths.testCasesFile));
   } else {
-    console.log(chalk.gray('⏭️  Skipping (exists):'), chalk.white(paths.testCasesFile));
+    logger.log(chalk.gray('⏭️  Skipping (exists):'), chalk.white(paths.testCasesFile));
   }
 
   // Create test files if they don't exist
   if (!fs.existsSync(paths.test1File)) {
     fs.writeFileSync(paths.test1File, getTestTemplate(year, day, 1));
-    console.log(chalk.green('🎁 Created:'), chalk.white(paths.test1File));
+    logger.log(chalk.green('🎁 Created:'), chalk.white(paths.test1File));
   } else {
-    console.log(chalk.gray('⏭️  Skipping (exists):'), chalk.white(paths.test1File));
+    logger.log(chalk.gray('⏭️  Skipping (exists):'), chalk.white(paths.test1File));
   }
 
   if (!fs.existsSync(paths.test2File)) {
     fs.writeFileSync(paths.test2File, getTestTemplate(year, day, 2));
-    console.log(chalk.green('🎁 Created:'), chalk.white(paths.test2File));
+    logger.log(chalk.green('🎁 Created:'), chalk.white(paths.test2File));
   } else {
-    console.log(chalk.gray('⏭️  Skipping (exists):'), chalk.white(paths.test2File));
+    logger.log(chalk.gray('⏭️  Skipping (exists):'), chalk.white(paths.test2File));
   }
 };
 
-export const getScaffoldPaths = (year: number, day: number): ScaffoldPaths => {
+export const getScaffoldPaths = (year: number, day: number) => {
   const dayDir = path.join(
     process.cwd(),
     'src',
     'solutions',
-    year.toString(),
-    `day-${day.toString().padStart(2, '0')}`,
+    `${year}`,
+    `day-${`${day}`.padStart(2, '0')}`,
   );
 
   return {

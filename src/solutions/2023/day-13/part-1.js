@@ -1,7 +1,7 @@
-import findStringsDistance from '#dilatorily/advent-of-code/utility/find-strings-distance';
-import reduceSum from '#dilatorily/advent-of-code/utility/reduce-sum';
-import reverseString from '#dilatorily/advent-of-code/utility/reverse-string';
-import transposeMatrix from '#dilatorily/advent-of-code/utility/transpose-matrix';
+import { findStringsDistance } from '#dilatorily/advent-of-code/utility/find-strings-distance';
+import { reverseString } from '#dilatorily/advent-of-code/utility/reverse-string';
+import { sum } from '#dilatorily/advent-of-code/utility/sum';
+import { transposeMatrix } from '#dilatorily/advent-of-code/utility/transpose-matrix';
 
 const findVerticalReflection = (terrain, smudges = 0) => {
   for (let index = 1; index < terrain[0].length; index += 1) {
@@ -53,7 +53,7 @@ export default (input) => {
 
       return 0;
     })
-    .reduce(reduceSum);
+    .reduce(sum);
 
   return summarize;
 };
