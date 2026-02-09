@@ -9,8 +9,7 @@ export interface ScaffoldPaths {
 }
 
 export interface TestCase {
-  description?: string;
-  input: string[];
+  input: string;
   part1Output: number | string;
   part2Output: number | string;
 }

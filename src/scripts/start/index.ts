@@ -1,3 +1,4 @@
+import { spawn } from 'node:child_process';
 import { parseArgs } from 'node:util';
 
 import chalk from 'chalk';
@@ -24,6 +25,7 @@ const parseCliArgs = () => {
       date: { type: 'string' },
       part: { type: 'string' },
       quiet: { default: false, type: 'boolean' },
+      watch: { default: false, type: 'boolean' },
     },
   });
 
@@ -51,6 +53,22 @@ const printFestiveHeader = (): void => {
   logger.log(chalk.green.bold('Solution Runner\n'));
 };
 
+const runWatchMode = (year: number, day: number, part: number) => {
+  const dayStr = `${day}`.padStart(2, '0');
+  const testPattern = `src/solutions/${year}/day-${dayStr}/part-${part}.test.ts`;
+
+  return new Promise<void>((resolve) => {
+    const jestProcess = spawn('npm', ['test', '--', '--watch', testPattern], {
+      shell: true,
+      stdio: 'inherit',
+    });
+
+    jestProcess.on('close', () => {
+      resolve();
+    });
+  });
+};
+
 await (async () => {
   try {
     const args = parseCliArgs();
@@ -62,6 +80,10 @@ await (async () => {
 
     if (part !== undefined) {
       validatePart(part);
+    }
+
+    if (args.watch && !part) {
+      throw new Error('Watch mode requires --part flag. Usage: --watch --part [1|2]');
     }
 
     const yearLine = `${chalk.yellow('🎁 Year:')} ${chalk.white(year)}`;
@@ -98,7 +120,11 @@ await (async () => {
     // Run solutions only if --part flag is specified
     const shouldRunSolutions = args.part !== undefined;
 
-    if (shouldRunSolutions) {
+    if (args.watch && !!part) {
+      // Watch mode: start Jest, skip solution execution
+      logger.log(chalk.cyan('👀 Starting watch mode for tests...\n'));
+      await runWatchMode(year, day, part);
+    } else if (shouldRunSolutions) {
       if (part === 1 || part === undefined) {
         await runSolution(year, day, 1, paths.inputFile);
       }

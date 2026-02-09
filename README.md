@@ -42,11 +42,13 @@ Repository for my solutions for [Advent of Code](https://adventofcode.com).
 **Options:**
 
 - `--quiet` - Suppress progress output (only shows final answer and errors)
+- `--watch` - Start Jest in watch mode for the specified part (requires `--part` flag)
 
 **Examples:**
 
 ```bash
 npm start -- --date=2025-12-01 --part 1              # Normal output with progress
 npm start -- --date=2025-12-01 --part 1 --quiet      # Quiet mode (solution output only)
+npm start -- --date=2025-12-01 --part 1 --watch      # Watch mode for tests
 npm run login -- --quiet                             # Minimal login output
 ```

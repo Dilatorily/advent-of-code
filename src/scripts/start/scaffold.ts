@@ -18,7 +18,7 @@ const solutionTemplate = `export const solution = (lines: string[]) => {
 
 const testCasesTemplate = `import type { TestCase } from '#dilatorily/advent-of-code/scripts/start/types';
 
-export const testCases: TestCase[] = [];
+export const testCases: TestCase[] = [{ input: '', part1Output: 0, part2Output: 0 }];
 `;
 
 const getTestTemplate = (year: number, day: number, part: number) => {
@@ -26,12 +26,12 @@ const getTestTemplate = (year: number, day: number, part: number) => {
   const dayStr = `${day}`.padStart(2, '0');
   return `import { describe, expect, it } from '@jest/globals';
 
-import solution from '#dilatorily/advent-of-code/solutions/${year}/day-${dayStr}/part-${part}';
+import { solution } from '#dilatorily/advent-of-code/solutions/${year}/day-${dayStr}/part-${part}';
 import { testCases } from '#dilatorily/advent-of-code/solutions/${year}/day-${dayStr}/test-cases';
 
 describe('${year}-12-${dayStr} part ${part}', () => {
-  it.each(testCases)('$description', ({ input, ${outputField} }) => {
-    expect(solution(input)).toBe(${outputField});
+  it.each(testCases)('returns $${outputField} for $input', ({ input, ${outputField} }) => {
+    expect(solution(input.split('\\n'))).toBe(${outputField});
   });
 });
 `;
