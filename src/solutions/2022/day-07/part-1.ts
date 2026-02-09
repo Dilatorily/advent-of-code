@@ -7,7 +7,7 @@ interface FileSystemNode {
 
 const RESTRICTED_NAMES = ['parent', 'size', 'type'];
 
-export const solution = (lines: string[]): number => {
+export const solution = (lines: string[]) => {
   const fileSystem: FileSystemNode = { type: 'folder' };
   let cursor = fileSystem;
 
@@ -33,7 +33,7 @@ export const solution = (lines: string[]): number => {
       }
     });
 
-  const calculateFolderSize = (folder: FileSystemNode): number => {
+  const calculateFolderSize = (folder: FileSystemNode) => {
     Object.keys(folder)
       .filter((name) => !RESTRICTED_NAMES.includes(name))
       .forEach((name) => {

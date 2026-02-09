@@ -1,4 +1,4 @@
-const parseStacks = (lines: string[]): string[][] => {
+const parseStacks = (lines: string[]) => {
   const stackLines: string[] = [];
   let lineIndex = 0;
 
@@ -30,7 +30,7 @@ const parseStacks = (lines: string[]): string[][] => {
   return stacks;
 };
 
-export const solution = (lines: string[]): string => {
+export const solution = (lines: string[]) => {
   const stacks = parseStacks(lines);
 
   // Find where the moves start (after the empty line following the stack numbers)

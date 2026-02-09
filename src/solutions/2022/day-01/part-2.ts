@@ -1,4 +1,4 @@
-export const solution = (lines: string[]): number => {
+export const solution = (lines: string[]) => {
   return lines
     .join('\n')
     .split('\n\n')

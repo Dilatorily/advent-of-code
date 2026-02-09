@@ -1,4 +1,4 @@
-export const solution = (lines: string[]): number => {
+export const solution = (lines: string[]) => {
   return (
     lines[0].split('').findIndex((character, index, buffer) => {
       if (index < 4) {

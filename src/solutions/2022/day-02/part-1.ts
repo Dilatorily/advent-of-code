@@ -10,7 +10,7 @@ const strategy: Record<string, number> = {
   'C Z': 6,
 };
 
-export const solution = (lines: string[]): number => {
+export const solution = (lines: string[]) => {
   return lines
     .filter((line) => line.length > 0)
     .reduce((sum, scenario) => sum + (strategy[scenario] || 0), 0);

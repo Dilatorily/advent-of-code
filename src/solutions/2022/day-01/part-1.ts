@@ -1,4 +1,4 @@
-export const solution = (lines: string[]): number => {
+export const solution = (lines: string[]) => {
   return Math.max(
     ...lines
       .join('\n')

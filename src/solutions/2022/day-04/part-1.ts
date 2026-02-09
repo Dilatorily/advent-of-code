@@ -1,4 +1,4 @@
-export const solution = (lines: string[]): number => {
+export const solution = (lines: string[]) => {
   return lines
     .filter((line) => line.length > 0)
     .map((pair) => {
