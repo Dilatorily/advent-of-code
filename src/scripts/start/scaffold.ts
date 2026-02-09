@@ -30,9 +30,12 @@ import { solution } from '#dilatorily/advent-of-code/solutions/${year}/day-${day
 import { testCases } from '#dilatorily/advent-of-code/solutions/${year}/day-${dayStr}/test-cases';
 
 describe('${year}-12-${dayStr} part ${part}', () => {
-  it.each(testCases)('returns $${outputField} for $input', ({ input, ${outputField} }) => {
-    expect(solution(input.split('\\n'))).toBe(${outputField});
-  });
+  it.each(testCases.filter((testCase) => '${outputField}' in testCase))(
+    'returns $${outputField} for $input',
+    ({ input, ${outputField} }) => {
+      expect(solution(input.split('\\n'))).toBe(${outputField});
+    },
+  );
 });
 `;
 };

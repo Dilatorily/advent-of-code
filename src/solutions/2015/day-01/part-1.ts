@@ -1,7 +1,7 @@
-document
-  .querySelector('pre')
-  .textContent.split('')
-  .reduce((floor, instruction) => {
+export const solution = (lines: string[]) => {
+  const instructions = lines[0].split('');
+
+  return instructions.reduce((floor, instruction) => {
     if (instruction === '(') {
       return floor + 1;
     }
@@ -12,3 +12,4 @@ document
 
     return floor;
   }, 0);
+};

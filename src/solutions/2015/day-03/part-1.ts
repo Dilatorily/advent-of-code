@@ -1,8 +1,7 @@
-const map = { '0,0': 1 };
-document
-  .querySelector('pre')
-  .textContent.split('')
-  .reduce(
+export const solution = (lines: string[]) => {
+  const map: Record<string, number> = { '0,0': 1 };
+
+  lines[0].split('').reduce(
     (position, instruction) => {
       const newPosition = [...position];
 
@@ -28,4 +27,6 @@ document
     },
     [0, 0],
   );
-console.log(Object.keys(map).length);
+
+  return Object.keys(map).length;
+};
