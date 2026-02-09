@@ -10,18 +10,18 @@ export interface ScaffoldPaths {
 
 interface Part1TestCase {
   input: string;
-  part1Output: number;
+  part1Output: number | string;
 }
 
 interface Part2TestCase {
   input: string;
-  part2Output: number;
+  part2Output: number | string;
 }
 
 interface BothPartTestCase {
   input: string;
-  part1Output: number;
-  part2Output: number;
+  part1Output: number | string;
+  part2Output: number | string;
 }
 
 export type TestCase = Part1TestCase | Part2TestCase | BothPartTestCase;
