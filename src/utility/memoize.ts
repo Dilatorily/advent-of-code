@@ -1,6 +1,8 @@
-export const memoize = <T>(callback: (...args: unknown[]) => T) => {
+export const memoize = <T, P extends unknown[]>(
+  callback: (...args: P) => T,
+): ((...args: P) => T) => {
   const cache = new Map<string, T>();
-  return (...args: unknown[]) => {
+  return (...args: P) => {
     const key = JSON.stringify(args);
 
     if (cache.has(key)) {

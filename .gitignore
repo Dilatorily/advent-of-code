@@ -2,5 +2,6 @@
 !.gitignore
 !.husky
 !.nvmrc
+!.vscode
 input.txt
 node_modules

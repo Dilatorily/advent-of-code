@@ -1,0 +1,13 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "jestrunner.jestCommand": "npm test",
+  "eslint.options": {
+    "flags": ["unstable_native_nodejs_ts_config"]
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.test.ts"
+  }
+}

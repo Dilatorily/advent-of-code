@@ -1,14 +1,13 @@
 import importAliasPlugin from '@dword-design/eslint-plugin-import-alias';
-import js from '@eslint/js';
+import eslint from '@eslint/js';
 import jestPlugin from 'eslint-plugin-jest';
 import prettierPlugin from 'eslint-plugin-prettier/recommended';
 import unusedImportsPlugin from 'eslint-plugin-unused-imports';
 import { defineConfig } from 'eslint/config';
-import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig([
-  js.configs.recommended,
+  eslint.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
   importAliasPlugin.configs.recommended,
@@ -17,11 +16,7 @@ export default defineConfig([
   prettierPlugin,
   {
     files: ['*.config.ts', 'src/**/*.ts'],
-    languageOptions: {
-      globals: globals.node,
-      parserOptions: { projectService: true },
-      sourceType: 'module',
-    },
+    languageOptions: { parserOptions: { projectService: true } },
     plugins: { 'unused-imports': unusedImportsPlugin },
     rules: {
       '@dword-design/import-alias/prefer-alias': ['error', { aliasForSubpaths: true }],

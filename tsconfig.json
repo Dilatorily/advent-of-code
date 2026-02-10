@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
     "erasableSyntaxOnly": true,
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "isolatedModules": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "noEmit": true,
     "paths": {
       "#dilatorily/advent-of-code/*": ["./src/*"]
     },
     "skipLibCheck": true,
     "strict": true,
-    "target": "ESNext",
-    "verbatimModuleSyntax": true
+    "target": "ESNext"
   },
   "exclude": ["node_modules", "src/solutions/**/*.js"],
   "include": ["*.config.ts", "src/**/*.ts"]
