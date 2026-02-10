@@ -38,7 +38,7 @@ const parseCliArgs = () => {
   return values;
 };
 
-const printFestiveHeader = (): void => {
+const printFestiveHeader = () => {
   const tree = `
       🎄
      🎄🎄

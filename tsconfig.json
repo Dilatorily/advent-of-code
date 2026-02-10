@@ -12,6 +12,6 @@
     "strict": true,
     "target": "ESNext"
   },
-  "exclude": ["node_modules", "src/solutions/**/*.js"],
+  "exclude": ["node_modules"],
   "include": ["*.config.ts", "src/**/*.ts"]
 }

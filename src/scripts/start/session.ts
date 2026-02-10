@@ -9,11 +9,11 @@ import { logger } from '#dilatorily/advent-of-code/utility/logger';
 
 const SESSION_FILE = path.join(process.cwd(), '.session');
 
-const readSessionFile = (): string | undefined => {
+const readSessionFile = () => {
   try {
     return fs.readFileSync(SESSION_FILE, 'utf-8').trim();
   } catch {
-    return undefined;
+    // Silently ignore if file doesn't exist
   }
 };
 

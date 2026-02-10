@@ -1,3 +1,4 @@
+import { jsonParse } from '#dilatorily/advent-of-code/utility/json-parse';
 import { sum } from '#dilatorily/advent-of-code/utility/sum';
 import { transposeMatrix } from '#dilatorily/advent-of-code/utility/transpose-matrix';
 
@@ -87,6 +88,6 @@ export const solution = (lines: string[]) => {
   const cycleIndex = cycleStart + ((cycles - cycleStart) % cycleLength);
 
   const [cyclePlatform] = Object.entries(cache).find(([, value]) => value === cycleIndex) ?? [''];
-  const load = calculateLoad(JSON.parse(cyclePlatform) as string[]);
+  const load = calculateLoad(jsonParse<string[]>(cyclePlatform));
   return load;
 };

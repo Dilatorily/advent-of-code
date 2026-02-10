@@ -21,7 +21,7 @@ const parseQuietMode = () => {
   setQuietMode(values.quiet);
 };
 
-const printLoginHeader = (): void => {
+const printLoginHeader = () => {
   const gift = `
       🎀
     ┌────┐
@@ -71,7 +71,9 @@ await (async () => {
     logger.log(chalk.bold.green('\n🎄✨ Session authenticated successfully! ✨🎄'));
     logger.log(chalk.cyan('   Run npm start to begin solving puzzles.\n'));
   } catch (error) {
-    logger.error(chalk.red(`\n✖ ${(error as Error).message}\n`));
-    process.exit(1);
+    if (error instanceof Error) {
+      logger.error(chalk.red(`\n✖ ${error.message}\n`));
+      process.exit(1);
+    }
   }
 })();

@@ -1,5 +1,5 @@
 const parseStacks = (lines: string[]) => {
-  const stackLines: string[] = [];
+  const stackLines = [];
   let lineIndex = 0;
 
   // Collect all lines until we hit the empty line
@@ -13,7 +13,7 @@ const parseStacks = (lines: string[]) => {
   const numStacks = numbersLine.trim().split(/\s+/).length;
 
   // Initialize empty stacks
-  const stacks: string[][] = Array.from({ length: numStacks }, () => []);
+  const stacks = Array.from<never, string[]>({ length: numStacks }, () => []);
 
   // Parse stack lines from bottom to top (excluding the numbers line)
   for (let i = stackLines.length - 1; i >= 0; i -= 1) {

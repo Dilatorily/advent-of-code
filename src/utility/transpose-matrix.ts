@@ -1,4 +1,4 @@
-export const transposeMatrix = <T>(matrix: T[][]): T[][] =>
+export const transposeMatrix = <T>(matrix: T[][]) =>
   matrix.reduce<T[][]>(
     (transposedMatrix, row) =>
       row.map((_, index) => [...(transposedMatrix[index] ?? []), row[index]]),

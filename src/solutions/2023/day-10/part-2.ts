@@ -69,8 +69,8 @@ const getDirections = (cell: string) => {
 };
 
 export const solution = (lines: string[]) => {
-  const start: Node = { column: 0, directions: [], row: 0 };
-  const map: Cell[][] = lines.map((row, rowIndex) =>
+  const start = { column: 0, directions: [] as string[], row: 0 };
+  const map = lines.map<Cell[]>((row, rowIndex) =>
     row.split('').map((cell, columnIndex) => {
       if (cell === 'S') {
         start.column = columnIndex;
@@ -83,7 +83,7 @@ export const solution = (lines: string[]) => {
 
   start.directions = getStartNodeDirections(map, start);
 
-  const queue: Node[] = [start];
+  const queue = [start];
 
   while (queue.length > 0) {
     const node = queue.shift();

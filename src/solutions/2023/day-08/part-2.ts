@@ -10,9 +10,9 @@ const getPath = (
   const sequence = instructions.split('');
 
   for (let index = 0; index < Number.MAX_SAFE_INTEGER; index += 1) {
-    const direction = sequence[index % sequence.length];
+    const direction = sequence[index % sequence.length] as 'L' | 'R';
     let node = path[path.length - 1];
-    path.push(network[node][direction as 'L' | 'R']);
+    path.push(network[node][direction]);
 
     node = path[path.length - 1];
     if (node.endsWith('Z')) {

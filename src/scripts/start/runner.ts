@@ -9,12 +9,7 @@ import { logger } from '#dilatorily/advent-of-code/utility/logger';
 
 import type { SolutionModule } from '#dilatorily/advent-of-code/scripts/start/types';
 
-export const runSolution = async (
-  year: number,
-  day: number,
-  part: number,
-  inputFile: string,
-): Promise<void> => {
+export const runSolution = async (year: number, day: number, part: number, inputFile: string) => {
   const spinner = ora(`🎅 Solving part ${part}...`).start();
 
   try {
@@ -38,7 +33,8 @@ export const runSolution = async (
     spinner.succeed(chalk.green(`⭐ Part ${part} solved in ${duration.toFixed(2)}ms!`));
 
     const resultStr = `${result}`;
-    logger.log(chalk.yellow('\n🎄 Answer:'), chalk.bold(chalk.white(resultStr)));
+    logger.log(chalk.yellow('\n🎄 Answer:'));
+    logger.log(chalk.bold(chalk.white(resultStr)));
 
     // Copy to clipboard
     await clipboardy.write(resultStr);

@@ -18,7 +18,7 @@ const solutionTemplate = `export const solution = (lines: string[]) => {
 
 const testCasesTemplate = `import type { TestCase } from '#dilatorily/advent-of-code/scripts/start/types';
 
-export const testCases: TestCase[] = [{ input: '', part1Output: 0, part2Output: 0 }];
+export const testCases: TestCase[] = [{ input: \`\`, part1Output: 0, part2Output: 0 }];
 `;
 
 const getTestTemplate = (year: number, day: number, part: number) => {

@@ -11,7 +11,7 @@ const ORDERED_HAND_TYPES = [
 ];
 
 const getHandType = (hand: string) => {
-  const cardCounts: Record<string, number> = ORDERED_CARDS.reduce(
+  const cardCounts = ORDERED_CARDS.reduce<Record<string, number>>(
     (counts, card) => Object.assign(counts, { [card]: 0 }),
     {},
   );

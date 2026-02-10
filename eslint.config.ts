@@ -39,5 +39,5 @@ export default defineConfig([
       ],
     },
   },
-  { ignores: ['node_modules', 'src/solutions/**/*.js'] },
+  { ignores: ['node_modules'] },
 ]);

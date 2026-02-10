@@ -5,6 +5,7 @@ import prompts from 'prompts';
 
 import { getBitwardenPath, rootDir } from '#dilatorily/advent-of-code/scripts/login/configuration';
 import { spinner } from '#dilatorily/advent-of-code/scripts/login/spinner';
+import { jsonParse } from '#dilatorily/advent-of-code/utility/json-parse';
 import { logger } from '#dilatorily/advent-of-code/utility/logger';
 
 import type {
@@ -34,14 +35,14 @@ const bwCommandWithInput =
       shell: false,
     });
 
-export const hasActiveSession = (): boolean => {
+export const hasActiveSession = () => {
   const status = bwCommand('status');
   if (status.status !== 0) {
     return false;
   }
 
   try {
-    const data = JSON.parse(status.stdout) as BitwardenStatusResponse;
+    const data = jsonParse<BitwardenStatusResponse>(status.stdout);
     return data.status !== 'unauthenticated';
   } catch {
     return false;
@@ -124,7 +125,7 @@ export const getCredentials = (sessionKey: string) => {
     throw new Error(`Search failed: ${searchResult.stderr}`);
   }
 
-  const items = JSON.parse(searchResult.stdout) as BitwardenItem[];
+  const items = jsonParse<BitwardenItem[]>(searchResult.stdout);
   if (items.length <= 0) {
     throw new Error(
       'No GitHub credentials found in Bitwarden. Ensure you have a login item with URL github.com',

@@ -10,7 +10,7 @@ export const solution = (lines: string[]) => {
           .map((number) => Number.parseInt(number, 10)),
       ),
   );
-  const cardTotals: number[] = Array(cards.length).fill(1) as number[];
+  const cardTotals = Array.from({ length: cards.length }, () => 1);
 
   cards.forEach(([winningNumbers, numbers], index) => {
     const amountOfWinningNumbers = numbers.filter((number) =>

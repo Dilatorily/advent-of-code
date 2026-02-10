@@ -54,7 +54,7 @@ export const solution = (lines: string[]) => {
   calculateFolderSize(fileSystem);
 
   const folders: number[] = [];
-  const getFoldersUnderLimit = (folder: FileSystemNode, limit = 100000): void => {
+  const getFoldersUnderLimit = (folder: FileSystemNode, limit = 100000) => {
     if (folder.type !== 'folder') {
       return;
     }

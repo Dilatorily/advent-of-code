@@ -19,7 +19,7 @@ const hash = (string: string) =>
   }, 0);
 
 export const solution = (lines: string[]) => {
-  const boxes: Lens[][] = fillArray(256, []);
+  const boxes = fillArray<Lens[]>(256, []);
   const steps = lines[0].split(',');
 
   steps.forEach((step) => {

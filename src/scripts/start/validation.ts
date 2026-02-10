@@ -29,7 +29,7 @@ const validateDateNotInFuture = (year: number, month: number, day: number) => {
   }
 };
 
-export const parseDate = (dateStr?: string): { year: number; day: number } => {
+export const parseDate = (dateStr?: string) => {
   if (!dateStr) {
     throw new Error('Date is required. Please use --date YYYY-MM-DD format.');
   }

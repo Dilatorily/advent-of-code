@@ -57,7 +57,7 @@ export const solution = (lines: string[]) => {
 
   const minimumFolderSize = UNUSED_DISK_SPACE - (TOTAL_DISK_SPACE - (fileSystem.size ?? 0));
   const folders: FileSystemNode[] = [];
-  const parseFolders = (folder: FileSystemNode): void => {
+  const parseFolders = (folder: FileSystemNode) => {
     if (folder.type !== 'folder') {
       return;
     }
