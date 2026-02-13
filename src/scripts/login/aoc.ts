@@ -16,7 +16,7 @@ export const aocLogin = async (bitwardenConfiguration: BitwardenConfiguration) =
     const page = await browser.newPage();
 
     spinner.text = '🎄 Navigating to Advent of Code...';
-    await page.goto('https://adventofcode.com', { waitUntil: 'networkidle' });
+    await page.goto('https://adventofcode.com');
 
     const signoutLink = await page.$('a[href$="/auth/signout"]');
     if (signoutLink) {
