@@ -9,7 +9,7 @@ import {
 import { spinner } from '#dilatorily/advent-of-code/scripts/login/spinner';
 
 import type { BitwardenConfiguration } from '#dilatorily/advent-of-code/scripts/login/types';
-import type { Page } from 'puppeteer';
+import type { Page } from 'playwright';
 
 export const githubLogin = async (page: Page, bitwardenConfiguration: BitwardenConfiguration) => {
   let currentUrl = new URL(page.url());
@@ -26,12 +26,9 @@ export const githubLogin = async (page: Page, bitwardenConfiguration: BitwardenC
   // Handle GitHub login
   if (currentUrl.pathname === '/login') {
     spinner.text = '🔑 Logging into GitHub...';
-    await page.type('#login_field', credentials.username);
-    await page.type('#password', credentials.password);
-    await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle0' }),
-      page.click('input[name="commit"]'),
-    ]);
+    await page.fill('#login_field', credentials.username);
+    await page.fill('#password', credentials.password);
+    await page.click('input[name="commit"]');
   }
 
   // Handle 2FA flow
@@ -46,10 +43,7 @@ export const githubLogin = async (page: Page, bitwardenConfiguration: BitwardenC
     const totpCode = getTwoFactorCode(credentials.itemId);
 
     spinner.text = '📱 Submitting 2FA code...';
-    await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle0' }),
-      page.type('#app_totp', totpCode),
-    ]);
+    await page.fill('#app_totp', totpCode);
   }
 
   logout();
@@ -71,8 +65,5 @@ export const githubOauth = async (page: Page) => {
   }
 
   spinner.text = '🎄 Waiting for OAuth redirect...';
-  await Promise.all([
-    page.waitForNavigation({ waitUntil: 'networkidle0' }),
-    authorizeButton.click(),
-  ]);
+  await authorizeButton.click();
 };

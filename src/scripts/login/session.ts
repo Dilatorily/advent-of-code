@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import { getSessionPath } from '#dilatorily/advent-of-code/scripts/login/configuration';
 import { logger } from '#dilatorily/advent-of-code/utility/logger';
 
-import type { Cookie } from 'puppeteer';
+import type { Cookie } from 'playwright';
 
 const getSession = (cookies: Cookie[]) => {
   const sessionCookie = cookies.find(({ name }) => name === 'session');

@@ -19,6 +19,7 @@ Repository for my solutions for [Advent of Code](https://adventofcode.com).
 
    ```bash
    npm install
+   npx playwright install
    ```
 
 2. Get your session cookie:

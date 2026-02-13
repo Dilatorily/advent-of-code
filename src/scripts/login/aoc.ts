@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { launch } from 'puppeteer';
+import { chromium } from 'playwright';
 
 import { githubLogin, githubOauth } from '#dilatorily/advent-of-code/scripts/login/github';
 import { spinner } from '#dilatorily/advent-of-code/scripts/login/spinner';
@@ -10,19 +10,19 @@ import type { BitwardenConfiguration } from '#dilatorily/advent-of-code/scripts/
 export const aocLogin = async (bitwardenConfiguration: BitwardenConfiguration) => {
   spinner.start();
 
-  const browser = await launch({ headless: 'shell' });
+  const browser = await chromium.launch({ headless: true });
 
   try {
     const page = await browser.newPage();
 
     spinner.text = '🎄 Navigating to Advent of Code...';
-    await page.goto('https://adventofcode.com', { waitUntil: 'networkidle0' });
+    await page.goto('https://adventofcode.com', { waitUntil: 'networkidle' });
 
     const signoutLink = await page.$('a[href$="/auth/signout"]');
     if (signoutLink) {
       spinner.succeed(chalk.green('🎅 Already logged in to Advent of Code'));
       logger.log(chalk.green('✨ Session obtained'));
-      return await browser.cookies();
+      return await page.context().cookies();
     }
 
     spinner.text = '🔑 Clicking login...';
@@ -32,7 +32,7 @@ export const aocLogin = async (bitwardenConfiguration: BitwardenConfiguration) =
       throw new Error('Could not find login link');
     }
 
-    await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle0' }), loginLink.click()]);
+    await loginLink.click();
 
     const githubButton = await page.$('a[href$="/auth/github"]');
     if (!githubButton) {
@@ -41,10 +41,7 @@ export const aocLogin = async (bitwardenConfiguration: BitwardenConfiguration) =
     }
 
     spinner.text = '🐙 Clicking GitHub auth...';
-    await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle0' }),
-      githubButton.click(),
-    ]);
+    await githubButton.click();
 
     // Login to GitHub if needed
     await githubLogin(page, bitwardenConfiguration);
@@ -52,6 +49,7 @@ export const aocLogin = async (bitwardenConfiguration: BitwardenConfiguration) =
     // Provide OAuth permissions if needed
     await githubOauth(page);
 
+    await page.waitForURL('https://adventofcode.com/**');
     const currentUrl = new URL(page.url());
     if (currentUrl.hostname !== 'adventofcode.com') {
       spinner.fail(chalk.red(`Failed to redirect to Advent of Code`));
@@ -61,7 +59,7 @@ export const aocLogin = async (bitwardenConfiguration: BitwardenConfiguration) =
 
     spinner.succeed(chalk.green('🎄 Authenticated'));
     logger.log(chalk.green('✨ Session obtained'));
-    return await browser.cookies();
+    return await page.context().cookies();
   } finally {
     await browser.close();
   }
