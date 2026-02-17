@@ -22,10 +22,10 @@ const parseCliArgs = () => {
     allowPositionals: true,
     args: process.argv.slice(2),
     options: {
-      date: { type: 'string' },
-      part: { type: 'string' },
-      quiet: { default: false, type: 'boolean' },
-      watch: { default: false, type: 'boolean' },
+      date: { short: 'd', type: 'string' },
+      part: { short: 'p', type: 'string' },
+      quiet: { default: false, short: 'q', type: 'boolean' },
+      watch: { default: false, short: 'w', type: 'boolean' },
     },
   });
 
