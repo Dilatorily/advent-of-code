@@ -1,6 +1,3 @@
-export const reverseString = (string: string) =>
-  Iterator.from(new Intl.Segmenter().segment(string))
-    .map(({ segment }) => segment)
-    .toArray()
-    .reverse()
-    .join('');
+import { stringToCharArray } from '#dilatorily/advent-of-code/utility/string-to-char-array';
+
+export const reverseString = (string: string) => stringToCharArray(string).reverse().join('');
