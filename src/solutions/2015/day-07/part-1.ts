@@ -1,13 +1,13 @@
 import { toNumber } from '#dilatorily/advent-of-code/utility/to-number';
 
-interface BaseWire {
-  identifier: string;
-  signal?: number;
-}
-
 interface AndWire extends BaseWire {
   inputs: [Wire, Wire];
   operation: 'AND';
+}
+
+interface BaseWire {
+  identifier: string;
+  signal?: number;
 }
 
 interface LShiftWire extends BaseWire {
@@ -38,9 +38,9 @@ interface ValueWire extends BaseWire {
   inputs: Wire;
 }
 
-type Wire = AndWire | LShiftWire | NotWire | NumberWire | OrWire | ValueWire | RShiftWire;
+type Wire = AndWire | LShiftWire | NotWire | NumberWire | OrWire | RShiftWire | ValueWire;
 
-const upsertWire = (wire: string, wires: Record<string, Wire | undefined>) => {
+const upsertWire = (wire: string, wires: Record<string, undefined | Wire>) => {
   if (Number.isNaN(toNumber(wire))) {
     wires[wire] ??= { identifier: wire } as Wire;
     return wires[wire];
@@ -49,7 +49,7 @@ const upsertWire = (wire: string, wires: Record<string, Wire | undefined>) => {
   return { signal: toNumber(wire) };
 };
 
-const buildWire = (line: string, wires: Record<string, Wire | undefined>) => {
+const buildWire = (line: string, wires: Record<string, undefined | Wire>) => {
   const [signal, wire] = line.split(' -> ');
   const inputs = signal.split(' ');
   const baseWire = upsertWire(wire, wires);
@@ -93,7 +93,7 @@ const buildWire = (line: string, wires: Record<string, Wire | undefined>) => {
   }
 };
 
-const calculateSignal = (wire: Wire | undefined): number => {
+const calculateSignal = (wire: undefined | Wire): number => {
   if (!wire) {
     return 0;
   }
@@ -119,14 +119,14 @@ const calculateSignal = (wire: Wire | undefined): number => {
     case 'LSHIFT':
       wire.signal = (calculateSignal(wire.inputs[0]) << calculateSignal(wire.inputs[1])) & 0xffff;
       break;
+    case 'NOT':
+      wire.signal = ~calculateSignal(wire.inputs) & 0xffff;
+      break;
     case 'OR':
       wire.signal = (calculateSignal(wire.inputs[0]) | calculateSignal(wire.inputs[1])) & 0xffff;
       break;
     case 'RSHIFT':
       wire.signal = (calculateSignal(wire.inputs[0]) >> calculateSignal(wire.inputs[1])) & 0xffff;
-      break;
-    case 'NOT':
-      wire.signal = ~calculateSignal(wire.inputs) & 0xffff;
       break;
     default:
       throw new Error('Invalid operation!');
@@ -136,7 +136,7 @@ const calculateSignal = (wire: Wire | undefined): number => {
 };
 
 export const solution = (lines: string[]) => {
-  const wires: Record<string, Wire | undefined> = {};
+  const wires: Record<string, undefined | Wire> = {};
 
   lines.forEach((line) => {
     buildWire(line, wires);

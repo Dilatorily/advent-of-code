@@ -88,9 +88,9 @@ export const unlock = async ({ clientId, clientSecret, serverUrl }: BitwardenCon
 
   spinner.stop();
   const response = await prompts({
-    type: 'password',
-    name: 'masterPassword',
     message: 'Bitwarden master password:',
+    name: 'masterPassword',
+    type: 'password',
     validate: (value: string) => value.length > 0 || 'Master password is required',
   });
   if (!response.masterPassword || typeof response.masterPassword !== 'string') {

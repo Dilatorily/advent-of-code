@@ -1,15 +1,15 @@
 const brackets: Record<string, string> = {
   '(': ')',
+  '<': '>',
   '[': ']',
   '{': '}',
-  '<': '>',
 };
 
 const scoring: Record<string, number> = {
   ')': 1,
+  '>': 4,
   ']': 2,
   '}': 3,
-  '>': 4,
 };
 
 export const solution = (lines: string[]) => {

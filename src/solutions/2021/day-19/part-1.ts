@@ -1,5 +1,5 @@
-type Vector = [number, number, number];
 type Rotation = [[number, number, number], [number, number, number], [number, number, number]];
+type Vector = [number, number, number];
 
 const rotations: Rotation[] = [
   [
@@ -168,7 +168,7 @@ const findCommonBeacons = (beacons1: Vector[], beacons2: Vector[]) => {
 };
 
 const processScanners = (scanners: Vector[][]) => {
-  const standardizedScanners: Record<number, Vector[] | undefined> = { 0: scanners[0] };
+  const standardizedScanners: Record<number, undefined | Vector[]> = { 0: scanners[0] };
   const matched: Record<number, boolean> = {};
 
   while (Object.keys(standardizedScanners).length < scanners.length) {

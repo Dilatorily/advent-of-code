@@ -15,7 +15,7 @@ export const solution = (lines: string[]) =>
         ),
     )
     .reduce((sum, game) => {
-      const minimums = { red: 0, green: 0, blue: 0 };
+      const minimums = { blue: 0, green: 0, red: 0 };
 
       game.forEach((subset) => {
         minimums.red = Math.max(minimums.red, parseInt(subset.red || '0', 10));

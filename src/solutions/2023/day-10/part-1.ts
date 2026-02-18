@@ -4,30 +4,31 @@ const WEST = 'WEST';
 const EAST = 'EAST';
 
 const directions: Record<string, string[]> = {
-  '|': [NORTH, SOUTH],
-  '-': [WEST, EAST],
-  L: [NORTH, EAST],
-  J: [NORTH, WEST],
   7: [WEST, SOUTH],
+  '-': [WEST, EAST],
   F: [EAST, SOUTH],
+  J: [NORTH, WEST],
+  L: [NORTH, EAST],
+  '|': [NORTH, SOUTH],
 };
 
 const directionDistances: Record<string, { column: number; row: number }> = {
+  [EAST]: { column: 1, row: 0 },
   [NORTH]: { column: 0, row: -1 },
   [SOUTH]: { column: 0, row: 1 },
   [WEST]: { column: -1, row: 0 },
-  [EAST]: { column: 1, row: 0 },
 };
+
+interface Cell {
+  directions: string[];
+  distance?: number;
+}
 
 interface Node {
   column: number;
   directions: string[];
   distance: number;
   row: number;
-}
-interface Cell {
-  directions: string[];
-  distance?: number;
 }
 
 const getStartNodeDirections = (map: Cell[][], start: Node) => {

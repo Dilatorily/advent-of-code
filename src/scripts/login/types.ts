@@ -1,17 +1,3 @@
-export interface BitwardenConfiguration {
-  clientId: string;
-  clientSecret: string;
-  serverUrl: string;
-}
-
-export interface BitwardenUnauthenticatedStatusResponse {
-  lastSync: null;
-  serverUrl: string;
-  status: 'unauthenticated';
-  userEmail: null;
-  userId: null;
-}
-
 export interface BitwardenAuthenticatedStatusResponse {
   lastSync: string;
   serverUrl: string;
@@ -20,15 +6,29 @@ export interface BitwardenAuthenticatedStatusResponse {
   userId: string;
 }
 
-export type BitwardenStatusResponse =
-  | BitwardenUnauthenticatedStatusResponse
-  | BitwardenAuthenticatedStatusResponse;
+export interface BitwardenConfiguration {
+  clientId: string;
+  clientSecret: string;
+  serverUrl: string;
+}
 
 export interface BitwardenItem {
   id: string;
   login: {
-    password: string | null;
-    totp: string | null;
-    username: string | null;
+    password: null | string;
+    totp: null | string;
+    username: null | string;
   };
+}
+
+export type BitwardenStatusResponse =
+  | BitwardenAuthenticatedStatusResponse
+  | BitwardenUnauthenticatedStatusResponse;
+
+export interface BitwardenUnauthenticatedStatusResponse {
+  lastSync: null;
+  serverUrl: string;
+  status: 'unauthenticated';
+  userEmail: null;
+  userId: null;
 }

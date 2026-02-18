@@ -99,11 +99,11 @@ export const getScaffoldPaths = (year: number, day: number) => {
 
   return {
     dayDir,
+    inputFile: path.join(dayDir, 'input.txt'),
     part1File: path.join(dayDir, 'part-1.ts'),
     part2File: path.join(dayDir, 'part-2.ts'),
-    testCasesFile: path.join(dayDir, 'test-cases.ts'),
     test1File: path.join(dayDir, 'part-1.test.ts'),
     test2File: path.join(dayDir, 'part-2.test.ts'),
-    inputFile: path.join(dayDir, 'input.txt'),
+    testCasesFile: path.join(dayDir, 'test-cases.ts'),
   };
 };

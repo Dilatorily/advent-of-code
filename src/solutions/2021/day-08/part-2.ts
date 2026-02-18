@@ -58,7 +58,7 @@ export const solution = (lines: string[]) =>
         .split('')
         .filter(
           (segment) =>
-            ![segments.topLeft, segments.topRight, segments.bottomRight].includes(segment),
+            ![segments.bottomRight, segments.topLeft, segments.topRight].includes(segment),
         );
       [segments.bottom] = digits[8]
         .split('')

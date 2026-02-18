@@ -51,5 +51,5 @@ export const parseDate = (dateStr?: string) => {
 
   validateDateNotInFuture(year, month, day);
   validateDay(day, year);
-  return { year, day };
+  return { day, year };
 };

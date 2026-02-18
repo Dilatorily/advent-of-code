@@ -75,7 +75,7 @@ await (async () => {
     setQuietMode(args.quiet);
 
     printFestiveHeader();
-    const { year, day } = parseDate(args.date);
+    const { day, year } = parseDate(args.date);
     const part = args.part ? parseInt(args.part, 10) : undefined;
 
     if (part !== undefined) {

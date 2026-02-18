@@ -3,7 +3,7 @@ export const solution = (lines: string[]) => {
     row.split('').map<{
       basin: number | undefined;
       depth: number;
-    }>((number) => ({ depth: parseInt(number, 10), basin: undefined })),
+    }>((number) => ({ basin: undefined, depth: parseInt(number, 10) })),
   );
 
   const lows: { column: number; row: number }[] = [];

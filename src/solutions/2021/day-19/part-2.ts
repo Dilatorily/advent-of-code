@@ -1,9 +1,9 @@
-type Vector = [number, number, number];
 type Rotation = [[number, number, number], [number, number, number], [number, number, number]];
 interface StandardizedScanner {
   beacons: Vector[];
   origin: Vector;
 }
+type Vector = [number, number, number];
 
 const rotations: Rotation[] = [
   [

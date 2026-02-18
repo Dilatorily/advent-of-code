@@ -1,7 +1,7 @@
 import { deepCopy } from '#dilatorily/advent-of-code/utility/deep-copy';
 import { jsonParse } from '#dilatorily/advent-of-code/utility/json-parse';
 
-type Pair = number | [Pair, Pair];
+type Pair = [Pair, Pair] | number;
 type Structure = [Pair, number][];
 
 const convertPairToStructure = (pair: Pair, depth = 0): Structure => {

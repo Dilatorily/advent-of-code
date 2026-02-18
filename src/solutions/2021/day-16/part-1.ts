@@ -7,10 +7,10 @@ interface LiteralValue {
 interface Packet {
   bits?: string;
   length: number;
+  subPackets?: Packet[];
   type?: number;
   value?: number;
   version: number;
-  subPackets?: Packet[];
 }
 
 const convertHexadecimalToBinary = (string: string) => {
@@ -73,7 +73,7 @@ const decodePacket = (string: string) => {
 
   if (mode === '0') {
     const length = parseInt(string.slice(7, 22), 2);
-    const packet = { length: length + 22, type, version, subPackets: [] as Packet[] };
+    const packet = { length: length + 22, subPackets: [] as Packet[], type, version };
     const subPackets = string.slice(22, 22 + length);
 
     while (packet.subPackets.reduce((sum, subPacket) => sum + subPacket.length, 0) < length) {
@@ -89,7 +89,7 @@ const decodePacket = (string: string) => {
 
   if (mode === '1') {
     const length = parseInt(string.slice(7, 18), 2);
-    const packet = { length: 0, type, version, subPackets: [] as Packet[] };
+    const packet = { length: 0, subPackets: [] as Packet[], type, version };
     const subPackets = string.slice(18);
 
     while (packet.subPackets.length < length) {

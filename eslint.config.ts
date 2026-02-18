@@ -1,6 +1,7 @@
 import importAliasPlugin from '@dword-design/eslint-plugin-import-alias';
 import eslint from '@eslint/js';
 import jestPlugin from 'eslint-plugin-jest';
+import perfectionistPlugin from 'eslint-plugin-perfectionist';
 import prettierPlugin from 'eslint-plugin-prettier/recommended';
 import unusedImportsPlugin from 'eslint-plugin-unused-imports';
 import { defineConfig } from 'eslint/config';
@@ -11,6 +12,7 @@ export default defineConfig([
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
   importAliasPlugin.configs.recommended,
+  perfectionistPlugin.configs['recommended-natural'],
   jestPlugin.configs['flat/recommended'],
   jestPlugin.configs['flat/style'],
   prettierPlugin,
@@ -27,6 +29,10 @@ export default defineConfig([
       ],
       '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
       'no-console': 'error',
+      'perfectionist/sort-imports': [
+        'error',
+        { groups: ['builtin', 'external', 'internal', 'type'], internalPattern: ['^#.+'] },
+      ],
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
         'error',

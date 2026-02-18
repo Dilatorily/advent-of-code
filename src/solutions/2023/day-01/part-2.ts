@@ -1,13 +1,13 @@
 const numbers: Record<string, number> = {
-  one: 1,
-  two: 2,
-  three: 3,
-  four: 4,
-  five: 5,
-  six: 6,
-  seven: 7,
   eight: 8,
+  five: 5,
+  four: 4,
   nine: 9,
+  one: 1,
+  seven: 7,
+  six: 6,
+  three: 3,
+  two: 2,
 };
 
 export const solution = (lines: string[]) =>
@@ -19,11 +19,11 @@ export const solution = (lines: string[]) =>
         const character = string[i];
         if (Number.isInteger(Number.parseInt(character, 10))) {
           newString = `${newString}${character}`;
-        } else if (['one', 'two', 'six'].includes(string.substring(i, i + 3))) {
+        } else if (['one', 'six', 'two'].includes(string.substring(i, i + 3))) {
           newString = `${newString}${numbers[string.substring(i, i + 3)]}`;
-        } else if (['four', 'five', 'nine'].includes(string.substring(i, i + 4))) {
+        } else if (['five', 'four', 'nine'].includes(string.substring(i, i + 4))) {
           newString = `${newString}${numbers[string.substring(i, i + 4)]}`;
-        } else if (['three', 'seven', 'eight'].includes(string.substring(i, i + 5))) {
+        } else if (['eight', 'seven', 'three'].includes(string.substring(i, i + 5))) {
           newString = `${newString}${numbers[string.substring(i, i + 5)]}`;
         }
       }

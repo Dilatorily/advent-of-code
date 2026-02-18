@@ -1,8 +1,8 @@
 interface FileSystemNode {
+  [key: string]: FileSystemNode | number | string | undefined;
   parent?: FileSystemNode;
   size?: number;
-  type: 'folder' | 'file';
-  [key: string]: FileSystemNode | number | string | undefined;
+  type: 'file' | 'folder';
 }
 
 const TOTAL_DISK_SPACE = 70000000;
